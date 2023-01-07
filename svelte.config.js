@@ -17,13 +17,6 @@ const config = {
                 ? adapterStatic()
                 : adapterAuto()
             : adapterAuto(),
-
-        paths:
-            process.env.GITHUB_ACTIONS && process.env.GITHUB_REPOSITORY
-                ? {
-                      base: "/" + process.env.GITHUB_REPOSITORY.split("/").pop(),
-                  }
-                : undefined,
     },
 };
 
