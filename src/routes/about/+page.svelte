@@ -7,12 +7,12 @@
 </svelte:head>
 
 <div class="about">
-    <img src={RedstoneWizard08} alt="RedstoneWizard08.png" class="about--image" />
+    <img src={RedstoneWizard08} alt="RedstoneWizard08.png" class="image" />
 
-    <div class="about--content">
-        <p class="about--content--title">Jacob Sapoznikow (he/him)</p>
+    <div class="content">
+        <p class="title">Jacob Sapoznikow (he/him)</p>
 
-        <div class="about--content--links">
+        <div class="links">
             <a href="mailto:redstonewizard08@nosadnile.net" rel="noreferrer" target="_blank"
                 >Email</a
             >
@@ -22,9 +22,9 @@
             >
         </div>
 
-        <hr class="about--content--divider" />
+        <hr class="divider" />
 
-        <p class="about--content--paragraph">
+        <p class="paragraph">
             Hi! My name is Jacob Sapoznikow, and I am a budding software engineer and game
             developer. I am 14 years old, and I have been coding for almost eight years. I can code
             with a lot of languages, frameworks, APIs, and SDKs, and I always love a good challenge.
@@ -45,30 +45,30 @@
         padding: 2rem;
 
         display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
 
-        &--image {
+        .image {
             width: 14rem;
             margin-right: 1.25rem;
         }
 
-        &--content {
-            margin-left: 1.25rem;
+        .content {
+            margin: 0 1.25rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 24rem;
 
-            &--title {
+            .title {
                 font-size: 16pt;
                 margin-top: 0;
                 margin-bottom: 2%;
                 font-family: "Montserrat";
             }
 
-            &--links {
+            .links {
                 margin-bottom: 4%;
 
                 a {
@@ -80,7 +80,7 @@
                 }
             }
 
-            &--divider {
+            .divider {
                 width: 100%;
                 height: 1px;
                 background-color: rgba(0, 0, 0, 0.6);
@@ -93,7 +93,7 @@
             flex-direction: column;
             height: auto;
 
-            &--image {
+            .image {
                 width: 100%;
                 margin-bottom: 6%;
             }

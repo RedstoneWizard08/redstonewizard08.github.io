@@ -3,10 +3,11 @@
     import { base } from "$app/paths";
     import { page } from "$app/stores";
     import { onMount } from "svelte";
-    import { isMobileMenuOpen } from "../stores/headerInfo";
+    import { isMenuOpen } from "../stores/headerInfo";
 
     let menuButton: HTMLDivElement;
     let menuBurger: HTMLDivElement;
+    let menu: HTMLDivElement;
 
     $: currentPath = $page.url.pathname;
 
@@ -17,138 +18,78 @@
 
     onMount(() => {
         window.addEventListener("resize", () => {
-            if (window.innerWidth > 850) $isMobileMenuOpen = false;
+            if (window.innerWidth > 850) $isMenuOpen = false;
         });
 
         window.addEventListener("click", (e) => {
-            if (
-                e.target != menuButton &&
-                e.target != menuBurger &&
-                $isMobileMenuOpen
-            )
-                $isMobileMenuOpen = false;
-        });
+            if (e.target != menuButton && e.target != menuBurger && e.target != menu && $isMenuOpen)
+                $isMenuOpen = false;
+        }, false);
     });
-
-    const goToRoute = (route: string) => {
-        goto(`${base}${route}`);
-    };
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="header">
-    <a class="header--title" href="{base}/">RedstoneWizard08</a>
+    <a class="title" href="{base}/">RedstoneWizard08</a>
 
-    <nav class="header--nav" class:open={$isMobileMenuOpen}>
-        <ul class="header--pages">
-            <li class="header--pages--page" class:current={isHome} on:click={() => goToRoute("/")}>
-                <a href="{base}/">Home</a>
-            </li>
+    <div class="pages" class:open={$isMenuOpen} bind:this={menu}>
+        <a href="{base}/" class="page" class:current={isHome}>Home</a>
+        <a href="{base}/projects" class="page" class:current={isProjects}>Projects</a>
+        <a href="{base}/about" class="page" class:current={isAbout}>About</a>
+        <a href="{base}/contact" class="page" class:current={isContact}>Contact</a>
+    </div>
 
-            <li class="header--pages--page" class:current={isProjects} on:click={() => goToRoute("/projects")}>
-                <a href="{base}/projects">Projects</a>
-            </li>
-
-            <li class="header--pages--page" class:current={isAbout} on:click={() => goToRoute("/about")}>
-                <a href="{base}/about">About</a>
-            </li>
-
-            <li class="header--pages--page mobile-only" class:current={isContact} on:click={() => goToRoute("/contact")}>
-                <a href="{base}/contact">Contact</a>
-            </li>
-        </ul>
-    </nav>
-
-    <div class="header--socials">
+    <div class="socials">
         <a
             href="https://github.com/RedstoneWizard08"
             target="_blank"
             rel="noreferrer"
-            class="header--socials--link"><i class="fa-brands fa-github" /></a
+            class="social"><i class="fa-brands fa-github" /></a
         >
 
         <a
             href="mailto:redstonewizard08@nosadnile.net"
             target="_blank"
             rel="noreferrer"
-            class="header--socials--link"><i class="fa-regular fa-envelope" /></a
+            class="social"><i class="fa-regular fa-envelope" /></a
         >
     </div>
 
-    <a
-        href="{base}/contact"
-        class="header--contact-button"
-        class:current={isContact}
-        rel="noreferrer">Contact</a
-    >
-
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
-        class="header--menu-button"
-        class:open={$isMobileMenuOpen}
-        on:click={() => ($isMobileMenuOpen = !$isMobileMenuOpen)}
+        class="menu-button"
+        class:open={$isMenuOpen}
+        on:click={() => ($isMenuOpen = !$isMenuOpen)}
         bind:this={menuButton}
     >
-        <div class="header--menu-button--burger" bind:this={menuBurger} />
+        <div class="burger" bind:this={menuBurger} />
     </div>
 </div>
 
 <style lang="scss">
-    @import "../styles/variables";
-    @import "../styles/util";
+    @use "../styles/variables";
 
-    $burgerWidth: 35px;
-    $burgerHeight: 4px;
+    $burgerWidth: 30px;
+    $burgerHeight: 2px;
     $burgerMargin: 8px;
 
     .header {
         width: 100%;
         height: 6rem;
 
-        background-color: $headerBackground;
-        color: $headerColor;
+        background-color: variables.$headerBackground;
+        color: variables.$headerColor;
 
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
 
-        &--contact-button {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-
-            color: $buttonPrimaryColor;
-            background-color: $buttonPrimaryBackground;
-            border: none;
-
-            padding: 0.5rem 1rem;
-            font-size: 13pt;
-            cursor: pointer;
-            text-decoration: none;
-            border-radius: 8px;
-
-            margin-right: 2%;
-
-            transition: color 0.5s ease, background-color 0.5s ease;
-
-            &:hover {
-                color: $buttonPrimaryColorHover;
-                background-color: $buttonPrimaryBackgroundHover;
-            }
-
-            &.current {
-                text-decoration: underline;
-                text-underline-offset: 6px;
-            }
-        }
-
-        &--title {
+        .title {
             font-family: "Share Tech Mono";
             font-size: 22pt;
 
-            color: $headerColor;
+            color: variables.$headerColor;
             text-decoration: none;
 
             height: 96%;
@@ -158,11 +99,86 @@
             flex-direction: row;
             align-items: center;
             justify-content: flex-start;
+
+            @media screen and (max-width: 850px) {
+                margin-left: 2%;
+            }
         }
 
-        &--menu-button {
-            height: 96%;
-            padding: 2%;
+        .pages {
+            width: calc(24% - 1rem);
+            height: calc(100% - 1rem);
+            padding: 0.5rem calc(0.5% + 0.5rem);
+
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+
+            background-color: variables.$headerBackground;
+            border-right: 1px solid variables.$menuBorder;
+            
+            opacity: 0;
+            transform: translateX(-100%);
+            transform-origin: left;
+            pointer-events: none;
+
+            transition: opacity 0.5s ease, transform 0.5s ease;
+
+            @media screen and (max-width: 850px) {
+                width: calc(74% - 1rem);
+            }
+
+            &.open {
+                opacity: 1;
+                transform: translateX(0);
+                pointer-events: unset;
+            }
+
+            .page {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+
+                padding: 0.4rem 0.5rem;
+                margin: 0.5rem 0;
+
+                background-color: variables.$buttonBackground;
+                color: variables.$buttonColor;
+                border-radius: 8px;
+                border: 1px solid variables.$buttonBorderColor;
+
+                text-decoration: none;
+                font-family: "Montserrat";
+                font-size: 14pt;
+
+                transition: background-color 0.5s ease, color 0.5s ease;
+
+                &.current {
+                    background-color: variables.$buttonBackgroundHover;
+                    color: variables.$buttonColorHover;
+
+                    &:hover {
+                        background-color: variables.$buttonBackground;
+                        color: variables.$buttonColor;
+                    }
+                }
+
+                &:hover {
+                    background-color: variables.$buttonBackgroundHover;
+                    color: variables.$buttonColorHover;
+                }
+            }
+        }
+
+        .menu-button {
+            padding: 1% 0;
+            margin: 1% 2%;
             cursor: pointer;
             transition: all 0.5s ease-in-out;
             border: none;
@@ -172,7 +188,11 @@
             align-items: center;
             justify-content: center;
 
-            &--burger {
+            @media screen and (max-width: 850px) {
+                margin-right: 6%;
+            }
+
+            .burger {
                 width: $burgerWidth;
                 height: $burgerHeight;
                 background-color: #ffffff;
@@ -201,7 +221,7 @@
                 }
             }
 
-            &.open &--burger {
+            &.open .burger {
                 background: transparent;
                 box-shadow: none;
 
@@ -215,153 +235,27 @@
             }
         }
 
-        &--socials {
+        .socials {
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: flex-end;
 
-            color: $headerColor;
+            color: variables.$headerColor;
 
-            margin-right: 1rem;
+            margin-left: auto;
+            margin-right: 0.25rem;
 
-            &--link {
+            .social {
                 padding: 0.5rem;
-                margin: 0.25rem;
-
+                margin: 0.5rem;
                 cursor: pointer;
-
                 color: inherit;
                 text-decoration: none;
-            }
-        }
 
-        @media screen and (min-width: 849px) {
-            &--menu-button {
-                display: none;
-                transition: none;
-
-                &--burger {
-                    &::before,
-                    &::after {
-                        visibility: hidden;
-                        transition: none;
-                    }
+                @media screen and (max-width: 850px) {
+                    margin: 0.125rem;
                 }
-            }
-
-            &--nav {
-                width: 100%;
-
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-            }
-
-            &--pages {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: flex-end;
-
-                width: 100%;
-
-                &--page {
-                    list-style: none;
-                    font-size: 13pt;
-                    padding: 0.5rem 1rem;
-                    text-align: center;
-                    cursor: pointer;
-                    color: $navItemColor;
-
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: center;
-
-                    border-radius: 8px;
-                    transition: background-color 0.5s ease;
-
-                    a {
-                        color: inherit;
-                        text-decoration: none;
-                        text-align: center;
-                    }
-
-                    &:hover {
-                        background-color: $headerHover;
-                    }
-
-                    &.current {
-                        text-decoration: underline;
-                        text-underline-offset: 6px;
-                    }
-                }
-            }
-        }
-
-        @media screen and (max-width: 850px) {
-            &--contact-button {
-                display: none !important;
-            }
-
-            &--title {
-                margin-left: 2%;
-            }
-
-            &--menu-button {
-                margin-right: 3%;
-            }
-
-            &--nav.open &--pages {
-                opacity: 1;
-            }
-
-            &--pages {
-                background: $headerBackground;
-                padding-top: 0.5rem;
-
-                display: flex;
-                flex-direction: column;
-                align-items: left;
-                justify-content: center;
-
-                opacity: 0;
-                transition: opacity 0.5s ease;
-
-                padding: 1rem;
-
-                &--page {
-                    list-style: none;
-                    font-size: 18px;
-                    width: 90%;
-
-                    color: $headerColor;
-
-                    &.current {
-                        text-decoration: underline;
-                        text-underline-offset: 6px;
-                    }
-
-                    a {
-                        display: block;
-                        color: inherit;
-                        text-decoration: none;
-
-                        padding: 0.7rem 1rem;
-                        text-align: left;
-
-                        width: calc(100% - 2rem);
-                    }
-                }
-            }
-
-            .header--pages {
-                position: absolute;
-                top: 3.2rem;
-                left: 0;
-                right: 0;
             }
         }
     }

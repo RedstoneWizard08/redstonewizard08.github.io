@@ -1,3 +1,7 @@
 {
-    "nuxt.isNuxtApp": false
+    "nuxt.isNuxtApp": false,
+    "prettier.prettierPath": "./node_modules/prettier",
+    "svelte.enable-ts-plugin": true,
+    "javascript.preferences.renameMatchingJsxTags": true,
+    "typescript.preferences.renameMatchingJsxTags": true
 }

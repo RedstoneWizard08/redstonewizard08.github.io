@@ -1,3 +1,3 @@
 import { writable } from "svelte/store";
 
-export const isMobileMenuOpen = writable<boolean>(false);
+export const isMenuOpen = writable<boolean>(false);
