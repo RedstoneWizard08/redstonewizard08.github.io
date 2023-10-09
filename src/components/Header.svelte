@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { page } from "$app/stores";
     import { onMount } from "svelte";
@@ -56,6 +55,7 @@
     </div>
 
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
         class="menu-button"
         class:open={$isMenuOpen}
@@ -112,7 +112,7 @@
 
             position: fixed;
             top: 0;
-            left: 0;
+            right: 0;
 
             display: flex;
             flex-direction: column;
@@ -123,8 +123,8 @@
             border-right: 1px solid variables.$menuBorder;
             
             opacity: 0;
-            transform: translateX(-100%);
-            transform-origin: left;
+            transform: translateX(100%);
+            transform-origin: right;
             pointer-events: none;
 
             transition: opacity 0.5s ease, transform 0.5s ease;
@@ -147,10 +147,11 @@
 
                 padding: 0.4rem 0.5rem;
                 margin: 0.5rem 0;
+                width: calc(100% - 1rem);
 
                 background-color: variables.$buttonBackground;
                 color: variables.$buttonColor;
-                border-radius: 8px;
+                border-radius: 6px;
                 border: 1px solid variables.$buttonBorderColor;
 
                 text-decoration: none;
@@ -164,7 +165,7 @@
                     color: variables.$buttonColorHover;
 
                     &:hover {
-                        background-color: variables.$buttonBackground;
+                        background-color: variables.$buttonBackgroundHoverBright;
                         color: variables.$buttonColor;
                     }
                 }
@@ -224,6 +225,8 @@
             &.open .burger {
                 background: transparent;
                 box-shadow: none;
+                position: fixed;
+                bottom: 3.5%;
 
                 &::before {
                     transform: rotate(45deg);

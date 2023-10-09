@@ -13,21 +13,24 @@ export const projects: Project[] = [
         id: "mayhem-rs",
         name: "Mayhem.rs",
         repo: "RedstoneWizard08/mayhem@github:",
-        description: "A Discord-like chat application for security, stability, speed, and ultimate customization.",
+        description:
+            "A Discord-like chat application for security, stability, speed, and ultimate customization.",
         stack: ["rust", "typescript", "sass", "bash", "react", "git", "github"],
     },
     {
         id: "go-dragon",
         name: "GoDragon",
         repo: "RedstoneWizard08/dragon@github:",
-        description: "An alternative to the Pterodactyl control panel, written in Go, TypeScript, and SASS.",
+        description:
+            "An alternative to the Pterodactyl control panel, written in Go, TypeScript, and SASS.",
         stack: ["go", "typescript", "sass", "bash", "svelte", "git", "github"],
     },
     {
         id: "choo-js",
         name: "Choo.js",
         repo: "Choo-js/Choo@github:",
-        description: "A multilingual full-stack web application toolkit, inspired by Ruby on Rails.",
+        description:
+            "A multilingual full-stack web application toolkit, inspired by Ruby on Rails.",
         stack: ["typescript", "git", "github"],
     },
     {
@@ -55,7 +58,8 @@ export const projects: Project[] = [
         id: "opendocs",
         name: "OpenDocs",
         repo: "opendocs-editor@github:",
-        description: "A WYSIWYG editor like Google Docs that supports Dyslexia, and as a bonus, custom fonts.",
+        description:
+            "A WYSIWYG editor like Google Docs that supports Dyslexia, and as a bonus, custom fonts.",
         stack: ["typescript", "javascript", "html", "css", "git", "github"],
     },
     {

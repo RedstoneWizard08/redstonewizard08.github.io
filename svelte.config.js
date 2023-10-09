@@ -1,13 +1,11 @@
 import adapterAuto from "@sveltejs/adapter-auto";
 import adapterNode from "@sveltejs/adapter-node";
 import adapterStatic from "@sveltejs/adapter-static";
-
-import importAssets from "svelte-preprocess-import-assets";
 import { vitePreprocess } from "@sveltejs/kit/vite";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-    preprocess: [vitePreprocess(), importAssets()],
+    preprocess: [vitePreprocess()],
 
     kit: {
         adapter: process.env.SVELTE_ADAPTER

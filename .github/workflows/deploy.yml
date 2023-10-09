@@ -3,33 +3,33 @@ name: Build and Deploy
 on: [push]
 
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+    build-and-deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Setup Node ⚙️
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-        
-      - name: Setup PNPM ⚙️
-        run: npm install --global pnpm
+        steps:
+            - name: Setup Node ⚙️
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16
 
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
+            - name: Setup PNPM ⚙️
+              run: npm install --global pnpm
 
-      - name: Install and Build 🔧
-        run: |
-          pnpm install
-          pnpm build
-          touch build/.nojekyll
-        env:
-          SVELTE_ADAPTER: static
+            - name: Checkout 🛎️
+              uses: actions/checkout@v3
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: build
+            - name: Install and Build 🔧
+              run: |
+                  pnpm install
+                  pnpm build
+                  touch build/.nojekyll
+              env:
+                  SVELTE_ADAPTER: static
+
+            - name: Deploy 🚀
+              uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  folder: build

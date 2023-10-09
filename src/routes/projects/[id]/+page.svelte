@@ -1,54 +1,113 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import { projects, resolveRepo } from "../../../util/projects";
-    import { getIcons } from "../../../util/icons";
+    import { Octokit } from "octokit";
+    import { getIcon } from "../../../util/icons";
+    import { Marked } from "marked";
+    import { markedHighlight } from "marked-highlight";
+    import axios from "axios";
+    import hljs from "highlight.js";
 
-    $: route = $page.params.id;
-    $: project = projects.find((p) => p.id == route);
-    $: isFound = !(project == undefined);
-    $: stack = project ? getIcons(project.stack) : [];
-    $: repo = resolveRepo(project);
+    const getProject = async () => {
+        const client = new Octokit();
 
-    $: ready = true;
+        const project = await client.rest.repos.get({
+            owner: "RedstoneWizard08",
+            repo: $page.params.id,
+        });
+
+        return project;
+    };
+
+    const getLangs = async () => {
+        const client = new Octokit();
+
+        const languages = await client.rest.repos.listLanguages({
+            owner: "RedstoneWizard08",
+            repo: $page.params.id,
+        });
+
+        return languages;
+    };
+
+    const getReadme = async () => {
+        const client = new Octokit();
+
+        const readme = await client.rest.repos.getReadme({
+            owner: "RedstoneWizard08",
+            repo: $page.params.id,
+        });
+
+        const url = readme.data.download_url;
+
+        return (await axios.get(url!)).data;
+    };
+
+    const renderMarkdown = (content: string) => {
+        const marked = new Marked(
+            markedHighlight({
+                langPrefix: "hljs language-",
+                highlight: (code, lang) => {
+                    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+                    return hljs.highlight(code, { language }).value;
+                },
+            })
+        );
+
+        return marked.parse(content);
+    };
+
+    let projectPromise = getProject();
+    let langsPromise = getLangs();
+    let readmePromise = getReadme();
 </script>
 
 <svelte:head>
-    {#if isFound}
-        <title>{project?.name} | RedstoneWizard08</title>
-    {:else}
+    {#await projectPromise}
+        <title>Loading... | RedstoneWizard08</title>
+    {:then project}
+        <title>{project.data.name} | RedstoneWizard08</title>
+    {:catch}
         <title>404 | RedstoneWizard08</title>
-    {/if}
+    {/await}
 </svelte:head>
 
-{#if isFound}
-    {#if ready}
-        <section class="project">
-            <p class="name">
-                <a class="back" href="/projects">
-                    <i class="fa-solid fa-arrow-left" />
-                </a>
+{#await projectPromise}
+    <p>Loading...</p>
+{:then project}
+    <section class="project">
+        <p class="name">
+            <a class="back" href="/projects">
+                <i class="fa-solid fa-arrow-left" />
+            </a>
 
-                {project?.name}
-                
-                {#if repo}
-                    <a href={repo} target="_blank" rel="noreferrer">
-                        <i class="devicon-github-original"></i>
-                    </a>
-                {/if}
-            </p>
-            
+            {project.data.name}
+
+            <a href={project.data.html_url} target="_blank" rel="noreferrer">
+                <i class="devicon-github-original"></i>
+            </a>
+        </p>
+
+        {#await langsPromise}
+            {""}
+        {:then langs}
             <div class="icons">
-                {#each stack as icon}
-                    <i class={icon} />
+                {#each Object.keys(langs.data) as lang}
+                    <i class={getIcon(lang.toLowerCase())} />
                 {/each}
             </div>
-        
-            <p class="text">{project?.description}</p>
-        </section>
-    {:else}
-        <p>Loading...</p>
-    {/if}
-{:else}
+        {/await}
+
+        {#await readmePromise}
+            <p class="text">Loading...</p>
+        {:then readme}
+            <p class="text">
+                {@html renderMarkdown(readme)}
+            </p>
+        {:catch}
+            <p class="text">{project.data.description}</p>
+        {/await}
+    </section>
+{:catch}
     <div class="not-found">
         <p>Project not found!</p>
 
@@ -57,7 +116,7 @@
             Back
         </a>
     </div>
-{/if}
+{/await}
 
 <style lang="scss">
     .not-found {
@@ -87,7 +146,9 @@
             align-items: center;
             justify-content: center;
 
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition:
+                background-color 0.5s ease,
+                color 0.5s ease;
 
             i {
                 margin-right: 0.5rem;
@@ -111,6 +172,10 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: space-evenly;
+
+        .text {
+            margin: 0 1.5%;
+        }
 
         .name {
             color: #ffffff;
@@ -145,7 +210,9 @@
                 align-items: center;
                 justify-content: center;
 
-                transition: background-color 0.5s ease, color 0.5s ease;
+                transition:
+                    background-color 0.5s ease,
+                    color 0.5s ease;
 
                 i {
                     font-size: 16pt;
@@ -170,25 +237,14 @@
             background-color: #1f2120;
             border-radius: 8px;
 
-            display: grid;
-            grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto;
-            grid-template-rows: auto;
-            grid-column-gap: 8px;
-            grid-row-gap: 16px;
-            justify-items: center;
+            display: flex;
+            flex-direction: row;
+            justify-items: flex-start;
             align-items: center;
 
             i {
                 font-size: 30pt;
-                width: 70px;
-            }
-
-            @media screen and (max-width: 850px) {
-                grid-template-columns: auto auto auto auto auto;
-            }
-
-            @media screen and (max-width: 450px) {
-                grid-template-columns: auto auto auto auto;
+                padding: 2px;
             }
         }
     }

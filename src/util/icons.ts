@@ -55,8 +55,8 @@ export const languages = {
 
 export type LanguageIcon = keyof typeof languages;
 
-export const getIcon = (icon: LanguageIcon) => {
-    return languages[icon];
+export const getIcon = (icon: LanguageIcon | string): string => {
+    return (languages as any)[icon as any] as string;
 };
 
 export const getIcons = (icons: LanguageIcon[]) => {

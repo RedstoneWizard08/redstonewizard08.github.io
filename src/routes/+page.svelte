@@ -15,7 +15,7 @@
     <p class="subtitle">Hobbyist, Web Designer, Game Developer</p>
 </section>
 
-<h2 class="section">Programming Languages (17)</h2>
+<h2 class="section">Programming Languages</h2>
 
 <div class="programming-languages">
     <i class="devicon-html5-plain colored" />
@@ -37,7 +37,7 @@
     <img src={python} alt="Python" />
 </div>
 
-<h2 class="section">Frameworks (9)</h2>
+<h2 class="section">Frameworks</h2>
 
 <div class="programming-languages">
     <i class="devicon-svelte-plain colored" />
@@ -51,7 +51,7 @@
     <img src={tauri} alt="Tauri" />
 </div>
 
-<h2 class="section">Version Control Systems (3)</h2>
+<h2 class="section">Version Control Systems</h2>
 
 <div class="programming-languages">
     <i class="devicon-git-plain-wordmark colored" />
@@ -59,7 +59,7 @@
     <i class="devicon-gitlab-plain-wordmark colored" />
 </div>
 
-<h2 class="section">APIs, SDKs, and Compilers (16)</h2>
+<h2 class="section">APIs, SDKs, and Compilers</h2>
 
 <div class="programming-languages">
     <i class="devicon-docker-plain colored" />

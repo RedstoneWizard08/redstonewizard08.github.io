@@ -1,5 +1,5 @@
 <script lang="ts">
-    import RedstoneWizard08 from "../../assets/me.png?webp";
+    import RedstoneWizard08 from "../../assets/me.png";
 </script>
 
 <svelte:head>
@@ -7,10 +7,10 @@
 </svelte:head>
 
 <div class="about">
-    <img src={RedstoneWizard08} alt="RedstoneWizard08.png" class="image" />
+    <img src={RedstoneWizard08} alt="RedstoneWizard08" class="image" />
 
     <div class="content">
-        <p class="title">Jacob Sapoznikow (he/him)</p>
+        <p class="title">Jacob Sapoznikow (he/him/his)</p>
 
         <div class="links">
             <a href="mailto:redstonewizard08@nosadnile.net" rel="noreferrer" target="_blank"
@@ -26,11 +26,12 @@
 
         <p class="paragraph">
             Hi! My name is Jacob Sapoznikow, and I am a budding software engineer and game
-            developer. I am 14 years old, and I have been coding for almost eight years. I can code
-            with a lot of languages, frameworks, APIs, and SDKs, and I always love a good challenge.
+            developer. I am 14 years old, and I have been coding for more than eight years.
+            I can code in a lot of languages, frameworks, APIs, and SDKs, and I always love
+            a good challenge.
             <br /><br />
             I am a proud Rustacean, and I make full-stack apps with Rust and TypeScript. My favorite
-            frontend framework is SvelteKit, but I also love using Next.js as well.
+            frontend framework is SvelteKit, but I also love trying new ones, too.
             <br /><br />
             If you ever need to contact me, you can send me an email using the address above (once the
             mail server is back up). See ya!
