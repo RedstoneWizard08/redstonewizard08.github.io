@@ -43,7 +43,9 @@
             border: 1px solid $buttonBorderColor;
             border-radius: 8px;
 
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition:
+                background-color 0.5s ease,
+                color 0.5s ease;
 
             &:hover {
                 color: $buttonColorHover;

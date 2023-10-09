@@ -8,8 +8,8 @@
         "preview": "vite preview",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-        "lint": "prettier --plugin-search-dir . --check . && eslint .",
-        "fmt": "prettier --plugin-search-dir . --write .",
+        "lint": "eslint .",
+        "fmt": "prettier --plugin=prettier-plugin-svelte . --write .",
         "postinstall": "svelte-kit sync",
         "serve": "serve -p 4000 build"
     },

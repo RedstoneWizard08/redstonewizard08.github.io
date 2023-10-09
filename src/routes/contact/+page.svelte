@@ -129,19 +129,9 @@
     <label for="name">Name <b>*</b></label>
 
     <fieldset name="name" class="name-section">
-        <input
-            type="text"
-            name="firstName"
-            class="input"
-            bind:value={firstName}
-        />
+        <input type="text" name="firstName" class="input" bind:value={firstName} />
 
-        <input
-            type="text"
-            name="lastName"
-            class="input"
-            bind:value={lastName}
-        />
+        <input type="text" name="lastName" class="input" bind:value={lastName} />
     </fieldset>
 
     <div class="name-text">
@@ -159,24 +149,9 @@
     <label for="phone" class="margin-top">Phone Number <b>*</b></label>
 
     <fieldset name="phone" class="phone-section">
-        <input
-            type="text"
-            class="input"
-            name="p_areacode"
-            bind:value={phoneAreaCode}
-        />
-        <input
-            type="text"
-            class="input"
-            name="p_prefix"
-            bind:value={phonePrefix}
-        />
-        <input
-            type="text"
-            class="input"
-            name="p_linenumber"
-            bind:value={phoneLineNumber}
-        />
+        <input type="text" class="input" name="p_areacode" bind:value={phoneAreaCode} />
+        <input type="text" class="input" name="p_prefix" bind:value={phonePrefix} />
+        <input type="text" class="input" name="p_linenumber" bind:value={phoneLineNumber} />
     </fieldset>
 
     <div class="phone-text">
@@ -381,7 +356,9 @@
             border-radius: 8px;
             cursor: pointer;
 
-            transition: color 0.5s ease, background-color 0.5s ease;
+            transition:
+                color 0.5s ease,
+                background-color 0.5s ease;
             font-family: "Ubuntu Mono";
             font-size: 12pt;
 

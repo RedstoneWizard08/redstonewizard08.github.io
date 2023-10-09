@@ -20,10 +20,19 @@
             if (window.innerWidth > 850) $isMenuOpen = false;
         });
 
-        window.addEventListener("click", (e) => {
-            if (e.target != menuButton && e.target != menuBurger && e.target != menu && $isMenuOpen)
-                $isMenuOpen = false;
-        }, false);
+        window.addEventListener(
+            "click",
+            (e) => {
+                if (
+                    e.target != menuButton &&
+                    e.target != menuBurger &&
+                    e.target != menu &&
+                    $isMenuOpen
+                )
+                    $isMenuOpen = false;
+            },
+            false
+        );
     });
 </script>
 
@@ -121,13 +130,15 @@
 
             background-color: variables.$headerBackground;
             border-right: 1px solid variables.$menuBorder;
-            
+
             opacity: 0;
             transform: translateX(100%);
             transform-origin: right;
             pointer-events: none;
 
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            transition:
+                opacity 0.5s ease,
+                transform 0.5s ease;
 
             @media screen and (max-width: 850px) {
                 width: calc(74% - 1rem);
@@ -158,7 +169,9 @@
                 font-family: "Montserrat";
                 font-size: 14pt;
 
-                transition: background-color 0.5s ease, color 0.5s ease;
+                transition:
+                    background-color 0.5s ease,
+                    color 0.5s ease;
 
                 &.current {
                     background-color: variables.$buttonBackgroundHover;

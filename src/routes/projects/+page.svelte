@@ -35,7 +35,7 @@
                         {repo.stargazers_count}
                     </div>
                 </div>
-                
+
                 {#if repo.description}
                     <p class="text">{repo.description}</p>
                 {/if}

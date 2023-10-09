@@ -26,9 +26,9 @@
 
         <p class="paragraph">
             Hi! My name is Jacob Sapoznikow, and I am a budding software engineer and game
-            developer. I am 14 years old, and I have been coding for more than eight years.
-            I can code in a lot of languages, frameworks, APIs, and SDKs, and I always love
-            a good challenge.
+            developer. I am 14 years old, and I have been coding for more than eight years. I can
+            code in a lot of languages, frameworks, APIs, and SDKs, and I always love a good
+            challenge.
             <br /><br />
             I am a proud Rustacean, and I make full-stack apps with Rust and TypeScript. My favorite
             frontend framework is SvelteKit, but I also love trying new ones, too.
