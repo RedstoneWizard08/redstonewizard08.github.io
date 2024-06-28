@@ -18,8 +18,8 @@ jobs:
             - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
-            - run: bun install
-            - run: bun --bun run build --preset github_pages
+            - run: npm install
+            - run: npm run build --preset github_pages
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v1
               with:
