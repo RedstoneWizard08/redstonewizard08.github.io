@@ -12,12 +12,12 @@ jobs:
             - run: corepack enable
             - uses: actions/setup-node@v3
               with:
-                  node-version: "21"
+                  node-version: "20"
             - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
-            - run: npm install
-            - run: npx nuxt build --preset github_pages
+            - run: bun install
+            - run: bun run nuxt build --preset github_pages
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v1
               with:
