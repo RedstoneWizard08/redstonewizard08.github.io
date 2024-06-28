@@ -1,0 +1,6 @@
+{
+    "biome.enabled": false,
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": "file:///mnt/vol/portfolio2/.github/workflows/deploy.yml"
+    }
+}
