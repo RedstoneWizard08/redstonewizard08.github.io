@@ -27,7 +27,7 @@
                                 v-for="(value, key) in languagePercentages"
                                 :key="key"
                                 location="bottom"
-                                :text="`${key}: ${formatNumber(languages[key])} lines`"
+                                :text="`${key}: ${formatNumber(languages[key])} bytes`"
                             >
                                 <template v-slot:activator="{ props }">
                                     <div
@@ -179,8 +179,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css");
-
 .container {
     padding: 2rem;
     background-color: var(--background-color);
