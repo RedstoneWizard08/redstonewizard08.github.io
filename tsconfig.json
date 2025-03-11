@@ -1,4 +1,16 @@
 {
-    // https://nuxt.com/docs/guide/concepts/typescript
-    "extends": "./.nuxt/tsconfig.json"
+    "extends": "astro/tsconfigs/strict",
+    "include": [".astro/types.d.ts", "**/*"],
+    "exclude": ["dist"],
+    "compilerOptions": {
+        "strictNullChecks": true,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "DOM.AsyncIterable",
+            "Decorators",
+            "ESNext",
+            "ESNext.Array"
+        ]
+    }
 }

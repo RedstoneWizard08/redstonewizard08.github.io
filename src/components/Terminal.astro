@@ -1,0 +1,87 @@
+---
+import { formatDate } from "date-fns";
+import TermWindow from "./TermWindow.svelte";
+import DateShow from "./DateShow.svelte";
+
+const fmtDate = (date: Date) => formatDate(date, "yyyy-MM-dd");
+const date = (y: number, m: number, d: number) => new Date(y, m - 1, d);
+
+const numLangs = 4;
+const numTechs = 4;
+const numPosts = 4;
+
+const langsLabel = "known languages";
+const techsLabel = "used technologies";
+const postsLabel = "blog posts";
+
+const langsUpdated = "last updated " + fmtDate(date(2025, 3, 4));
+const techsUpdated = "last updated " + fmtDate(date(2025, 3, 6));
+const postsUpdated = "last updated " + fmtDate(date(2025, 3, 7));
+---
+
+<div class="flex h-full w-full flex-col p-4">
+    <div class="text-lg font-bold">
+        <a href="/" class="border-b-0 hover:border-b-2">Redstone's Website</a>
+        <!-- <span class="animate-blink ml-2 h-full border-r-2 border-white"></span> -->
+    </div>
+
+    <p class="my-2 max-w-full overflow-clip text-clip whitespace-nowrap">
+        {Array(256).fill("-").join("")}
+    </p>
+
+    <p class="mb-2 font-bold flex flex-row items-center justify-start">
+        System Resources
+        <DateShow client:load />
+    </p>
+
+    <table class="ml-4 *:px-4">
+        <tr>
+            <td class="w-6"></td>
+            <td class="w-48"></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td class="color-green">{numLangs}</td>
+            <td class="color-purple">{langsLabel}</td>
+            <!-- <span class="color-gray">-</span> -->
+            <td class="color-light">{langsUpdated}</td>
+        </tr>
+
+        <tr>
+            <td class="color-green">{numTechs}</td>
+            <td class="color-blue">{techsLabel}</td>
+            <!-- <span class="color-gray">-</span> -->
+            <td class="color-light">{techsUpdated}</td>
+        </tr>
+
+        <tr>
+            <td class="color-green">{numPosts}</td>
+            <td class="color-yellow">{postsLabel}</td>
+            <!-- <span class="color-gray">-</span> -->
+            <td class="color-light">{postsUpdated}</td>
+        </tr>
+    </table>
+
+    <p class="my-2 max-w-full overflow-clip text-clip whitespace-nowrap">
+        {Array(256).fill("-").join("")}
+    </p>
+
+    <TermWindow client:load />
+</div>
+
+<style>
+    @keyframes blink {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    .animate-blink {
+        animation: blink 1s steps(2, jump-none) infinite;
+    }
+</style>

@@ -2,5 +2,15 @@
     "biome.enabled": false,
     "yaml.schemas": {
         "https://json.schemastore.org/github-workflow.json": "file:///mnt/vol/portfolio2/.github/workflows/deploy.yml"
-    }
+    },
+    "files.associations": {
+        "*.mdx": "mdx",
+        "*.css": "css",
+        "*.pcss": "postcss",
+        "*.scss": "scss"
+    },
+    "deno.enable": false,
+    "svelte.enable-ts-plugin": false,
+    "svelte.ask-to-enable-ts-plugin": false,
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
