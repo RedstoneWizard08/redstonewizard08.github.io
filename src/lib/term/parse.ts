@@ -1,7 +1,5 @@
-import { htmlText, styled, unHtml } from "./util";
-
 export const splitToCommands = (buf: string) => {
-    const rawScript = unHtml(buf)
+    const rawScript = buf
         .trim()
         .split("\n")
         .map((v) => v.trim());
@@ -43,15 +41,4 @@ export const splitToCommands = (buf: string) => {
     if (currentStmt != "") script.push(currentStmt);
 
     return script;
-};
-
-export const parseScript = (prompt: string, buf: string) => {
-    const script = splitToCommands(buf);
-    const prefix = styled("color-purple ml-4", "Execute:");
-
-    const scriptText = script
-        .map((v) => styled("color-gray ml-8", htmlText(">> " + v)))
-        .join("<br />");
-
-    return `${prompt}${buf}<br/>${prefix}<br/>${scriptText}<br/>`;
 };

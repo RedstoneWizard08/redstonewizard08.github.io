@@ -1,8 +1,8 @@
 import { analyze, Reference } from "eslint-scope";
-import * as ESTree from "espree";
+import type { Node } from "estree";
 
 export default function (
-    ast: ESTree.Node,
+    ast: Node,
     allowedGlobals: { [key: string]: boolean }
 ): { [key: string]: [number, number][] } {
     const scopeManager = analyze(ast, { ecmaVersion: 6 });

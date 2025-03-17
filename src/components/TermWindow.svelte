@@ -24,8 +24,6 @@
 
         await setupSwc();
 
-        console.log("SWC good");
-
         const search = new SearchAddon();
         const webgl = new WebglAddon();
         const links = new WebLinksAddon();
@@ -49,8 +47,6 @@
         $terminal.loadAddon(search);
         $terminal.loadAddon(webgl);
         $terminal.loadAddon(ligatures);
-
-        console.log("TERM good");
 
         $terminal.onData(async (e) => {
             switch (e) {

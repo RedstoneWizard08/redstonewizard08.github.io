@@ -1,15 +1,14 @@
 import * as path from "@std/path";
 import { get, writable } from "svelte/store";
 import { termBuffer, termPrompt } from "../stores";
-import { intrinsicCommands } from "./cmds";
 import { splitToCommands } from "./parse";
 import { canExecute } from "./perms";
 import { cwd, gid, uid } from "./info";
-import { readBinFile } from "./bin";
 import { terminal } from "./terminal";
 import { logError } from "./log";
 import { vfs } from "./vfs";
 import { evalScript, isScriptCommand } from "./swc";
+import type { VFSEntry } from "$$/system/vfs";
 
 export const pathVar = writable<string>("/usr/bin:/usr/local/bin");
 
@@ -21,72 +20,99 @@ export const executeScript = async () => {
     get(terminal).write("\r\n");
 
     for (const text of commands) {
-        const args: string[] = [];
+        await runCommand(text);
+    }
 
-        let buf = "";
-        let inString: false | "single" | "double" = false;
+    get(terminal).write(prompt);
+};
 
-        for (const char of text) {
-            if (inString == "double") {
-                if (char == '"') {
-                    inString = false;
-                    continue;
-                }
+export const runAs = async (targetUid: number, targetGid: number, text: string) => {
+    const curUid = get(uid);
+    const curGid = get(gid);
 
-                buf += char;
-                continue;
-            } else if (inString == "single") {
-                if (char == "'") {
-                    inString = false;
-                    continue;
-                }
+    uid.set(targetUid);
+    gid.set(targetGid);
 
-                buf += char;
-                continue;
-            }
+    await runCommand(text);
 
+    uid.set(curUid);
+    gid.set(curGid);
+};
+
+export const runCommand = async (text: string) => {
+    const args: string[] = [];
+
+    let buf = "";
+    let inString: false | "single" | "double" = false;
+
+    for (const char of text) {
+        if (inString == "double") {
             if (char == '"') {
-                inString = "double";
-            } else if (char == "'") {
-                inString = "single";
-            } else if (/\s/.test(char)) {
-                args.push(buf.trim());
-                buf = "";
+                inString = false;
                 continue;
-            } else {
-                buf += char;
             }
-        }
 
-        if (buf.trim() != "") {
-            args.push(buf.trim());
-        }
+            buf += char;
+            continue;
+        } else if (inString == "single") {
+            if (char == "'") {
+                inString = false;
+                continue;
+            }
 
-        if (args.length <= 0) {
-            logError("No command provided!");
+            buf += char;
             continue;
         }
 
-        const cmd = args.shift()!;
-        let found = false;
+        if (char == '"') {
+            inString = "double";
+        } else if (char == "'") {
+            inString = "single";
+        } else if (/\s/.test(char)) {
+            args.push(buf.trim());
+            buf = "";
+            continue;
+        } else {
+            buf += char;
+        }
+    }
 
-        outer: for (const dir of get(pathVar).split(":")) {
-            const fullPath = dir.startsWith("/")
-                ? path.normalize(dir)
-                : path.normalize(get(cwd) + "/" + dir);
+    if (buf.trim() != "") {
+        args.push(buf.trim());
+    }
 
-            const contents = vfs.readdir(fullPath) ?? [];
+    if (args.length <= 0) {
+        logError("No command provided!");
+        return;
+    }
 
-            for (const item of contents) {
-                if (
-                    (item.type == "file" || item.type == "symlink") &&
-                    item.name == cmd
-                ) {
-                    if (canExecute(get(uid), get(gid), item)) {
-                        const content = vfs.read(
-                            `${fullPath}/${item.name}`
-                        )!.contents;
+    const cmd = args.shift()!;
+    let found = false;
 
+    outer: for (const dir of get(pathVar).split(":")) {
+        const fullPath = dir.startsWith("/")
+            ? path.normalize(dir)
+            : path.normalize(get(cwd) + "/" + dir);
+
+        let contents: VFSEntry[] = [];
+
+        try {
+            contents = vfs.readdir(fullPath);
+        } catch (ex: any) {
+            continue;
+        }
+
+        for (const item of contents) {
+            if (
+                (item.type == "file" || item.type == "symlink") &&
+                item.name == cmd
+            ) {
+                if (canExecute(get(uid), get(gid), item)) {
+                    const content = vfs.read(
+                        `${fullPath}/${item.name}`
+                    )!.contents;
+
+                    try {
                         if (isScriptCommand(content)) {
                             const argv = [cmd, ...args];
 
@@ -97,39 +123,27 @@ export const executeScript = async () => {
 
                             found = true;
                             break outer;
-                        }
-
-                        try {
-                            const bin = readBinFile(content);
-
-                            const toExec = intrinsicCommands.get(bin);
-
-                            if (toExec) {
-                                toExec!(args);
-                            } else {
-                                logError(
-                                    `Intrinsic command not found: \x1b[0m\x1b[1;36m${bin}`
-                                );
-                            }
-                        } catch (ex: unknown) {
+                        } else {
                             logError(
-                                `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`
+                                `Could not figure out how to run file at ${fullPath}/${item.name}!`
                             );
                         }
-                    } else {
-                        logError("Permission denied.");
+                    } catch (ex: unknown) {
+                        logError(
+                            `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`
+                        );
                     }
-
-                    found = true;
-                    break outer;
+                } else {
+                    logError("Permission denied.");
                 }
-            }
-        }
 
-        if (!found) {
-            logError(`Command not found: ${cmd}`);
+                found = true;
+                break outer;
+            }
         }
     }
 
-    get(terminal).write(prompt);
+    if (!found) {
+        logError(`Command not found: ${cmd}`);
+    }
 };

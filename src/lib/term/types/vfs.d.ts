@@ -81,7 +81,8 @@ declare module "$$/system/vfs" {
         removeTree: (filePath: string) => void;
         read: (filePath: string) => FileInfo | undefined;
         stat: (filePath: string) => VFSFileStats;
-        mkdirs: (dirPath: string) => void;
+        exists: (filePath: string) => boolean;
+        mkdirs: (dirPath: string, permissions?: number) => void;
         readdir: (path: string) => VFSEntry[];
         reset: () => void;
     }

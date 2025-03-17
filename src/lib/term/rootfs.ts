@@ -1,85 +1,59 @@
-import { intToU32Bytes } from "./util";
 import ls from "./cmd/ls.ts?raw";
+import cat from "./cmd/cat.ts?raw";
+import cd from "./cmd/cd.ts?raw";
+import pwd from "./cmd/pwd.ts?raw";
+import rm from "./cmd/rm.ts?raw";
+import touch from "./cmd/touch.ts?raw";
+import clear from "./cmd/clear.ts?raw";
+import reset from "./cmd/reset.ts?raw";
+import id from "./cmd/id.ts?raw";
+import whoami from "./cmd/whoami.ts?raw";
+import echo from "./cmd/echo.ts?raw";
+import date from "./cmd/date.ts?raw";
+import uname from "./cmd/uname.ts?raw";
+import hostname from "./cmd/hostname.ts?raw";
+import help from "./cmd/help.ts?raw";
 
 export type DefaultFiles<K, V> = readonly [...[K, V][]];
 
-export const builtInMessage =
-    "This is a built-in command. Its implementation is done in JavaScript, but is called through this file in the VFS.";
-
-const builtInBin = (name: string) =>
-    new Uint8Array([
-        // BAD-E (bad exeecutable :P)
-        0xb,
-        0xa,
-        0xd,
-        0xe,
-        // [major] [minor] [patch] [rev]
-        0x0,
-        0x1,
-        0x0,
-        0x0,
-        // header
-        // 0xC, 0xC = Calling Convention
-        // type: 0x0, 0x1 = intrinsic call
-        0xc,
-        0xc,
-        0x0,
-        0x1,
-        // metadata (unused right now)
-        // metadata size (u32), includes null terminator
-        ...intToU32Bytes(builtInMessage.length + 1),
-        // null-terminated metadata
-        ...new TextEncoder().encode(builtInMessage),
-        0x0,
-        // the intrinsic call
-        // 0xC, 0xA, 0x1, 0x1 = CA11 = CALL
-        0xc,
-        0xa,
-        0x1,
-        0x1,
-        // the size of the call name
-        ...intToU32Bytes(name.length + 1),
-        // null-terminated call name
-        ...new TextEncoder().encode(name),
-        0x0,
-    ]);
-
-export const defaultDirs = [
-    "/usr",
-    "/usr/bin",
-    "/usr/lib",
-    "/usr/local",
-    "/usr/local/bin",
-    "/usr/local/lib",
-    "/etc",
-    "/var",
-    "/var/lib",
-    "/home/user",
+export const defaultDirs: [string, number][] = [
+    ["/usr", 0o755],
+    ["/usr/bin", 0o755],
+    ["/usr/lib", 0o755],
+    ["/usr/local", 0o755],
+    ["/usr/local/bin", 0o755],
+    ["/usr/local/lib", 0o755],
+    ["/etc", 0o755],
+    ["/var", 0o755],
+    ["/var/lib", 0o755],
+    ["/home", 0o755],
 ];
 
-export const defaultFiles: DefaultFiles<string, Uint8Array> = [
-    ["/usr/bin/echo", builtInBin("echo")],
-    ["/usr/bin/ls", new TextEncoder().encode(ls)],
-    ["/usr/bin/cat", builtInBin("cat")],
-    ["/usr/bin/rsh", builtInBin("rsh")],
-    ["/usr/bin/mkdir", builtInBin("mkdir")],
-    ["/usr/bin/rm", builtInBin("rm")],
-    ["/usr/bin/touch", builtInBin("touch")],
-    // ["/usr/bin/ed", builtInBin("ed")],
-    ["/usr/bin/cd", builtInBin("cd")],
-    ["/usr/bin/cp", builtInBin("cp")],
-    ["/usr/bin/help", builtInBin("help")],
-    ["/usr/bin/whoami", builtInBin("whoami")],
-    ["/usr/bin/hostname", builtInBin("hostname")],
-    ["/usr/bin/uname", builtInBin("uname")],
-    ["/usr/bin/date", builtInBin("date")],
-    ["/usr/bin/mv", builtInBin("mv")],
-    ["/usr/bin/pwd", builtInBin("pwd")],
-    ["/usr/bin/rmdir", builtInBin("rmdir")],
-    ["/usr/bin/clear", builtInBin("clear")],
-    ["/usr/bin/ln", builtInBin("ln")],
-    ["/usr/bin/id", builtInBin("id")],
-    ["/usr/bin/reset", builtInBin("reset")],
+export const defaultFiles: DefaultFiles<string, string> = [
+    ["/usr/bin/echo", echo],
+    ["/usr/bin/ls", ls],
+    ["/usr/bin/cat", cat],
+    // ["/usr/bin/rsh", rsh],
+    // ["/usr/bin/mkdir", mkdir],
+    ["/usr/bin/rm", rm],
+    ["/usr/bin/touch", touch],
+    // ["/usr/bin/ed", ed],
+    ["/usr/bin/cd", cd],
+    // ["/usr/bin/cp", cp],
+    ["/usr/bin/help", help],
+    ["/usr/bin/whoami", whoami],
+    ["/usr/bin/hostname", hostname],
+    ["/usr/bin/uname", uname],
+    ["/usr/bin/date", date],
+    // ["/usr/bin/mv", mv],
+    ["/usr/bin/pwd", pwd],
+    // ["/usr/bin/rmdir", rmdir],
+    ["/usr/bin/clear", clear],
+    // ["/usr/bin/ln", ln],
+    ["/usr/bin/id", id],
+    ["/usr/bin/reset", reset],
+    // ["/usr/bin/chmod", chmod],
+    // ["/usr/bin/chmod", chown],
 ];
 
 export const defaultSymlinks: [string, string][] = [

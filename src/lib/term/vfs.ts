@@ -1,7 +1,16 @@
 import * as path from "@std/path";
 import { get } from "svelte/store";
 import { defaultDirs, defaultFiles, defaultSymlinks } from "./rootfs";
-import { gid, uid, cwd } from "./info";
+import {
+    gid,
+    uid,
+    cwd,
+    USER_UID,
+    USER_GID,
+    ROOT_UID,
+    ROOT_GID,
+    userMap,
+} from "./info";
 import type {
     IVirtFS,
     FileInfo,
@@ -11,6 +20,7 @@ import type {
     VFSEntry,
     VFSFileStats,
 } from "$$/system/vfs";
+import { canRead, canWrite } from "./perms";
 
 export const DEFAULT_PERMISSIONS = 0o664;
 
@@ -54,7 +64,10 @@ export class VirtualFS implements IVirtFS {
     private getParentTree(
         input: string,
         create: boolean = false,
-        isFile: boolean = true
+        isFile: boolean = true,
+        permissions: number = DEFAULT_PERMISSIONS,
+        fileUid?: number,
+        fileGid?: number
     ) {
         if (this.isRoot(input)) {
             return this.tree;
@@ -62,6 +75,7 @@ export class VirtualFS implements IVirtFS {
 
         const parts = this.resolvePath(input);
         let parentRef = this.tree;
+        let vfsEntry: VFSEntry | null = null;
 
         if (isFile) parts.pop(); // Remove the name part
 
@@ -70,11 +84,17 @@ export class VirtualFS implements IVirtFS {
                 // If we are creating, create the directory, otherwise throw
 
                 if (create) {
+                    if (vfsEntry && !canWrite(get(uid), get(gid), vfsEntry)) {
+                        throw new ReferenceError(
+                            "ENOTPERM: Permission denied."
+                        );
+                    }
+
                     parentRef.set(part, {
                         tree: new Map(),
-                        permissions: DEFAULT_PERMISSIONS,
-                        owner: get(uid),
-                        group: get(gid),
+                        permissions,
+                        owner: fileUid ?? get(uid),
+                        group: fileGid ?? get(gid),
                     });
                 } else {
                     throw new ReferenceError(
@@ -84,6 +104,19 @@ export class VirtualFS implements IVirtFS {
             }
 
             const entry = parentRef.get(part)!;
+
+            if (
+                "permissions" in entry &&
+                !canRead(get(uid), get(gid), {
+                    permissions: entry.permissions,
+                    owner: entry.owner,
+                    group: entry.group,
+                    name: "",
+                    type: "file", // this doesn't matter
+                })
+            ) {
+                throw new ReferenceError("ENOTPERM: Permission denied.");
+            }
 
             // If this is not a directory:
             if (!("tree" in entry)) {
@@ -105,6 +138,14 @@ export class VirtualFS implements IVirtFS {
                     );
                 }
             } else {
+                vfsEntry = {
+                    permissions: entry.permissions,
+                    owner: entry.owner,
+                    group: entry.group,
+                    name: "",
+                    type: "folder",
+                };
+
                 // If this is a directory, set it as the parent
                 parentRef = entry.tree;
             }
@@ -120,7 +161,7 @@ export class VirtualFS implements IVirtFS {
         bytes: Uint8Array = new Uint8Array(),
         permissions = DEFAULT_PERMISSIONS
     ) {
-        const parent = this.getParentTree(filePath, true);
+        const parent = this.getParentTree(filePath, true, true, permissions);
         const fileName = this.getFileName(filePath);
 
         parent.set(fileName, {
@@ -295,8 +336,17 @@ export class VirtualFS implements IVirtFS {
         }
     }
 
-    public mkdirs(dirPath: string) {
-        this.getParentTree(dirPath, true, false);
+    public exists(filePath: string): boolean {
+        return this.stat(filePath).exists;
+    }
+
+    public mkdirs(
+        dirPath: string,
+        permissions: number = DEFAULT_PERMISSIONS,
+        uid?: number,
+        gid?: number
+    ) {
+        this.getParentTree(dirPath, true, false, permissions, uid, gid);
     }
 
     public readdir(path: string) {
@@ -345,18 +395,30 @@ export class VirtualFS implements IVirtFS {
 
     private bootstrap() {
         this.tree.clear();
+        uid.set(ROOT_UID);
+        gid.set(ROOT_GID);
+
+        for (const [path, permissions] of defaultDirs) {
+            this.mkdirs(path, permissions);
+        }
 
         for (const [path, data] of defaultFiles) {
-            this.write(path, data, 0o777);
+            this.write(path, new TextEncoder().encode(data), 0o555);
         }
 
         for (const [target, path] of defaultSymlinks) {
             this.symlink(target, path);
         }
 
-        for (const item of defaultDirs) {
-            this.mkdirs(item);
+        for (const [id, name] of Object.entries(userMap) as unknown as [
+            number,
+            string,
+        ][]) {
+            this.mkdirs(`/home/${name}`, 0o700, id, id);
         }
+
+        uid.set(USER_UID);
+        gid.set(USER_GID);
     }
 }
 

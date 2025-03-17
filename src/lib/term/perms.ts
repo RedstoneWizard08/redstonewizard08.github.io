@@ -1,4 +1,5 @@
 import type { VFSEntry } from "$$/system/vfs";
+import { ROOT_GID, ROOT_UID } from "./info";
 
 export interface TargetPermissions {
     read: boolean;
@@ -61,7 +62,7 @@ export const canRead = (uid: number, gid: number, file: VFSEntry) => {
               ? perms.group
               : perms.other;
 
-    return target.read;
+    return target.read || uid == ROOT_UID || gid == ROOT_GID;
 };
 
 export const canWrite = (uid: number, gid: number, file: VFSEntry) => {
@@ -74,7 +75,7 @@ export const canWrite = (uid: number, gid: number, file: VFSEntry) => {
               ? perms.group
               : perms.other;
 
-    return target.write;
+    return target.write || uid == ROOT_UID || gid == ROOT_GID;
 };
 
 export const canExecute = (uid: number, gid: number, file: VFSEntry) => {
@@ -87,6 +88,8 @@ export const canExecute = (uid: number, gid: number, file: VFSEntry) => {
               ? perms.group
               : perms.other;
 
+    // I don't care if you're root, you still need to `chmod +x`
+    // :troll_lq:
     return target.execute;
 };
 

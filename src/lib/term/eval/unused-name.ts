@@ -1,13 +1,13 @@
-import * as ESTree from "espree";
+import type { Node } from "estree";
 import { traverse } from "estraverse";
 
 const chars = "abcdefghijklmnopqrstuvwxyz$_";
 
-export default function (ast: ESTree.Node): string {
+export default function (ast: Node): string {
     const vars: { [key: string]: boolean } = {};
     // All global, local variables
     traverse(ast, {
-        enter: function (node: ESTree.Node): void {
+        enter: function (node: Node): void {
             if (node.type === "Identifier" && node.name.length === 1) {
                 vars[node.name] = true;
             }

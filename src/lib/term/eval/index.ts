@@ -1,10 +1,10 @@
-import * as ESTree from "espree";
 import { traverse } from "estraverse";
 import parse from "./parse";
 import getGlobals from "./get-globals";
 import InsertCode from "./insert-code";
 import stringInterpolation from "./string-interpolation";
 import unusedName from "./unused-name";
+import type { Node } from "estree";
 
 const DEFAULT_ALLOWED_GLOBALS = {
     undefined: true,
@@ -87,8 +87,8 @@ export default class ScopedEval {
         }
 
         // Reject dynamic import.
-        traverse(ast as ESTree.Node, {
-            enter: function (node: ESTree.Node) {
+        traverse(ast as Node, {
+            enter: function (node: Node) {
                 if (node.type === "ImportExpression") {
                     throw new Error(
                         `[${node.loc!.start.line}:${node.loc!.start.column}]: Dynamic import is not allowed`

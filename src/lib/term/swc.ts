@@ -1,8 +1,8 @@
 import initSwc, { transform } from "@swc/wasm-web";
 import ScopedEval from "./eval";
 import { vfs } from "./vfs";
-import { println } from "./log";
-import { cwd } from "./info";
+import { clearScreen, logError, logInfo, logWarn, println } from "./log";
+import { cwd, getMachineInfo, gid, groupMap, hostname, uid, userMap } from "./info";
 import { get } from "svelte/store";
 import {
     canExecute,
@@ -46,9 +46,20 @@ export const evalScript = async (code: string, argv: string[]) => {
                             vfs: "__cmd_injected_vfs",
                             process: "__cmd_injected_process",
                             cwd: "__cmd_injected_cwd",
+                            chdir: "__cmd_injected_chdir",
+                            uid: "__cmd_injected_uid",
+                            gid: "__cmd_injected_gid",
+                            user: "__cmd_injected_user",
+                            group: "__cmd_injected_group",
+                            machineInfo: "__cmd_injected_machineInfo",
+                            hostname: "__cmd_injected_hostname",
                         },
                         "$$/system/fmt": {
+                            clearScreen: "__cmd_injected_clearScreen",
                             println: "__cmd_injected_println",
+                            logInfo: "__cmd_injected_logInfo",
+                            logWarn: "__cmd_injected_logWarn",
+                            logError: "__cmd_injected_logError",
                         },
                         "$$/system/permissions": {
                             readPermissions: "__cmd_injected_readPermissions",
@@ -90,15 +101,30 @@ export const evalScript = async (code: string, argv: string[]) => {
         sourceFileName: "script.ts",
     });
 
+    // console.log("Eval:", out.code);
+
     const scope = new ScopedEval();
 
     await scope.eval(
         out.code,
         Object.assign(
             {
+                TextDecoder,
+                TextEncoder,
                 __cmd_injected_vfs: vfs,
                 __cmd_injected_cwd: get(cwd),
+                __cmd_injected_uid: get(uid),
+                __cmd_injected_gid: get(gid),
+                __cmd_injected_user: userMap[get(uid)],
+                __cmd_injected_group: groupMap[get(gid)],
+                __cmd_injected_machineInfo: getMachineInfo(),
+                __cmd_injected_hostname: get(hostname),
+                __cmd_injected_chdir: cwd.set,
+                __cmd_injected_clearScreen: clearScreen,
                 __cmd_injected_println: println,
+                __cmd_injected_logInfo: logInfo,
+                __cmd_injected_logWarn: logWarn,
+                __cmd_injected_logError: logError,
                 __cmd_injected_readPermissions: readPermissions,
                 __cmd_injected_readFilePermissions: readFilePermissions,
                 __cmd_injected_writePermissions: writePermissions,

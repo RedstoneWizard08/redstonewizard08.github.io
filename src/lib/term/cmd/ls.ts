@@ -2,7 +2,7 @@
 
 import * as path from "@std/path";
 import { cwd, process, vfs } from "$$/system/core";
-import { println } from "$$/system/fmt";
+import { logError, println } from "$$/system/fmt";
 import type { VFSEntry } from "$$/system/vfs";
 import { printPermissions } from "$$/system/permissions";
 
@@ -17,6 +17,18 @@ const main = async () => {
         const fullPath = item.startsWith("/")
             ? path.normalize(item)
             : path.normalize(cwd + "/" + item);
+
+        if (!vfs.exists(fullPath)) {
+            logError(`Folder at ${fullPath} does not exist!`);
+            continue;
+        }
+
+        const info = vfs.stat(fullPath);
+
+        if (info.exists && info.type != "folder") {
+            logError(`Entry at ${fullPath} is not a directory!`);
+            continue;
+        }
 
         all.push([fullPath, vfs.readdir(fullPath) ?? []]);
     }

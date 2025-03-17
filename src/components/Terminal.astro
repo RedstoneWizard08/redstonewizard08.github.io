@@ -6,9 +6,9 @@ import DateShow from "./DateShow.svelte";
 const fmtDate = (date: Date) => formatDate(date, "yyyy-MM-dd");
 const date = (y: number, m: number, d: number) => new Date(y, m - 1, d);
 
-const numLangs = 4;
-const numTechs = 4;
-const numPosts = 4;
+const numLangs = 300;
+const numTechs = 300;
+const numPosts = 300;
 
 const langsLabel = "known languages";
 const techsLabel = "used technologies";
@@ -36,7 +36,7 @@ const postsUpdated = "last updated " + fmtDate(date(2025, 3, 7));
 
     <table class="ml-4 *:px-4">
         <tr>
-            <td class="w-6"></td>
+            <td class="w-10"></td>
             <td class="w-48"></td>
             <td></td>
         </tr>
