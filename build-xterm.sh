@@ -2,15 +2,14 @@
 
 cd xterm.js
 
-bun i
-bun run rspack
+bun run build
+bun run package
 
 addons=(fit search web-links webgl)
 
 for addon in "${addons[@]}"; do
     cd addons/addon-$addon
-    bun i
-    bun run rspack
+    bun run package
     cd ../..
 done
 
