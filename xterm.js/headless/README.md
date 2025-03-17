@@ -15,14 +15,14 @@ npm install xterm-headless
 Then import as you would a regular node package. The recommended way to load `xterm-headless` is with TypeScript and the ES6 module syntax:
 
 ```javascript
-import { Terminal } from '@xterm/headless';
+import { Terminal } from "@xterm/headless";
 ```
 
 ## API
 
 The full API for `xterm-headless` is contained within the [TypeScript declaration file](https://github.com/xtermjs/xterm.js/blob/master/typings/xterm-headless.d.ts), use the branch/tag picker in GitHub (`w`) to navigate to the correct version of the API.
 
-Note that some APIs are marked *experimental*, these are added to enable experimentation with new ideas without committing to support it like a normal [semver](https://semver.org/) API. Note that these APIs can change radically between versions, so be sure to read release notes if you plan on using experimental APIs.
+Note that some APIs are marked _experimental_, these are added to enable experimentation with new ideas without committing to support it like a normal [semver](https://semver.org/) API. Note that these APIs can change radically between versions, so be sure to read release notes if you plan on using experimental APIs.
 
 ### Addons
 

@@ -130,7 +130,7 @@ export class CommandBuilder<
     public get args() {
         return this._args;
     }
-    
+
     public parse(argv: string[]) {
         for (const item of argv) {
             // TODO: Literally anything

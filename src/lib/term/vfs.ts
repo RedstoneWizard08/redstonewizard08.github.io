@@ -2,7 +2,15 @@ import * as path from "@std/path";
 import { get } from "svelte/store";
 import { defaultDirs, defaultFiles, defaultSymlinks } from "./rootfs";
 import { gid, uid, cwd } from "./info";
-import type { IVirtFS, FileInfo, FileTree, FolderInfo, SymLinkInfo, VFSEntry, VFSFileStats } from "$$/system/vfs";
+import type {
+    IVirtFS,
+    FileInfo,
+    FileTree,
+    FolderInfo,
+    SymLinkInfo,
+    VFSEntry,
+    VFSFileStats,
+} from "$$/system/vfs";
 
 export const DEFAULT_PERMISSIONS = 0o664;
 

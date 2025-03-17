@@ -7,11 +7,12 @@ about: Create a bug report
 <!-- Describe the bug here. -->
 
 ## Details
-- Browser and browser version: 
-- OS version: 
-- xterm.js version: 
+
+- Browser and browser version:
+- OS version:
+- xterm.js version:
 
 ### Steps to reproduce
 
-1. 
-2. 
+1.
+2.

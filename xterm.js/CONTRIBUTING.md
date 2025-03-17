@@ -43,19 +43,19 @@ You can find issues to work on by looking at the [help wanted](https://github.co
 - If your changes are easy to test or likely to regress, add tests. Tests go into `test`, directory.
 - Follow the general code style of the rest of the project (see below).
 - Submit a pull request
-([how to create a pull request](https://help.github.com/articles/fork-a-repo)).
+  ([how to create a pull request](https://help.github.com/articles/fork-a-repo)).
   Don't put more than one feature/fix in a single pull request.
 
 By contributing code to xterm.js you:
 
- - Agree to license the contributed code under xterm.js' [MIT
-   license](LICENSE).
+- Agree to license the contributed code under xterm.js' [MIT
+  license](LICENSE).
 
- - Confirm that you have the right to contribute and license the code
-   in question. (Either you hold all rights on the code, or the rights
-   holder has explicitly granted the right to use it like this,
-   through a compatible open source license or through a direct
-   agreement with you.)
+- Confirm that you have the right to contribute and license the code
+  in question. (Either you hold all rights on the code, or the rights
+  holder has explicitly granted the right to use it like this,
+  through a compatible open source license or through a direct
+  agreement with you.)
 
 ### Test coverage
 

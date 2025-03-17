@@ -6,33 +6,33 @@
 import * as path from "path";
 import { defineConfig } from "@rspack/cli";
 
-const addonName = 'WebLinksAddon';
-const mainFile = 'addon-web-links.js';
+const addonName = "WebLinksAddon";
+const mainFile = "addon-web-links.js";
 
 export default defineConfig({
-  entry: `./out/${addonName}.js`,
-  devtool: 'source-map',
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: ["source-map-loader"],
-        enforce: "pre",
-        exclude: /node_modules/
-      }
-    ]
-  },
-  experiments: {
-    outputModule: true,
-  },
-  output: {
-    filename: mainFile,
-    path: path.resolve('./lib'),
-    // library: addonName,
-    // libraryTarget: 'module',
-    library: {
-      type: "module",
+    entry: `./out/${addonName}.js`,
+    devtool: "source-map",
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: ["source-map-loader"],
+                enforce: "pre",
+                exclude: /node_modules/,
+            },
+        ],
     },
-  },
-  mode: 'production'
+    experiments: {
+        outputModule: true,
+    },
+    output: {
+        filename: mainFile,
+        path: path.resolve("./lib"),
+        // library: addonName,
+        // libraryTarget: 'module',
+        library: {
+            type: "module",
+        },
+    },
+    mode: "production",
 });

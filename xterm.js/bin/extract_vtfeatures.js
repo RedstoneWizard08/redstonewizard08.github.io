@@ -4,33 +4,24 @@
  *
  * Script to extract vt features documented in docstrings.
  */
-const fs = require('fs');
-const Mustache = require('mustache');
+const fs = require("fs");
+const Mustache = require("mustache");
 
 /**
  * regexp to fetch all comments
  * Fetches all multiline comments and single lines containing '// @vt:'.
  */
-const REX_COMMENTS = /^\s*?\/\*\*([\S\s]*?)\*\/|^\s*?\/\/ (@vt:.*?)$/mug;
+const REX_COMMENTS = /^\s*?\/\*\*([\S\s]*?)\*\/|^\s*?\/\/ (@vt:.*?)$/gmu;
 
 /**
  * regexp to parse the @vt line
  * expected data - "@vt: <status> <kind> <mnemonic> "<name>" "<sequence>" "<short description>"
  */
-const REX_VT_LINE = /^@vt:\s*(\w+|#\w+|#\w+\[.*?\])\s*(\w+)\s*(\w+)\s*"(.*?)"\s*"(.*?)"\s*"(.*?)".*$/;
+const REX_VT_LINE =
+    /^@vt:\s*(\w+|#\w+|#\w+\[.*?\])\s*(\w+)\s*(\w+)\s*"(.*?)"\s*"(.*?)"\s*"(.*?)".*$/;
 
 // known vt command types
-const TYPES = [
-  'C0',
-  'C1',
-  'ESC',
-  'CSI',
-  'DCS',
-  'OSC',
-  'APC',
-  'PM',
-  'SOS'
-];
+const TYPES = ["C0", "C1", "ESC", "CSI", "DCS", "OSC", "APC", "PM", "SOS"];
 
 const MARKDOWN_TMPL = `---
 title: Supported Terminal Sequences
@@ -321,30 +312,42 @@ To denote the sequences the tables use the same abbreviations as xterm does:
   }
   load(); // we are inlined behind all needed data, thus dont wait for onload (avoids flickering)
 </script>
-`
+`;
 
 // support status marcos
 // applied for:
 // - status field of single @vt line
 // - all lines in long description
 const MACRO = [
-  // #Y - supported
-  [/#Y/g, s => '<span title="supported">✓</span>'],
-  // #N - unsupported
-  [/#N/g, s => '<span title="unsupported">✗</span>'],
-  // #P[reason] - partial support with a reason as title
-  [/#P\[(.*?)\]/g, (s, p1) => `<span title="${p1}" style="text-decoration: underline">Partial</span>`],
-  // #B[reason] - supported but broken in a certain way, reason in title
-  [/#B\[(.*?)\]/g, (s, p1) => `<span title="${p1}" style="text-decoration: underline">Broken</span>`],
-  // #E[notes] - support via external resource, eg. addon
-  [/#E\[(.*?)\]/g, (s, p1) => `<span title="${p1}" style="text-decoration: underline">External</span>`]
+    // #Y - supported
+    [/#Y/g, (s) => '<span title="supported">✓</span>'],
+    // #N - unsupported
+    [/#N/g, (s) => '<span title="unsupported">✗</span>'],
+    // #P[reason] - partial support with a reason as title
+    [
+        /#P\[(.*?)\]/g,
+        (s, p1) =>
+            `<span title="${p1}" style="text-decoration: underline">Partial</span>`,
+    ],
+    // #B[reason] - supported but broken in a certain way, reason in title
+    [
+        /#B\[(.*?)\]/g,
+        (s, p1) =>
+            `<span title="${p1}" style="text-decoration: underline">Broken</span>`,
+    ],
+    // #E[notes] - support via external resource, eg. addon
+    [
+        /#E\[(.*?)\]/g,
+        (s, p1) =>
+            `<span title="${p1}" style="text-decoration: underline">External</span>`,
+    ],
 ];
 
 function applyMacros(s) {
-  for (let i = 0; i < MACRO.length; ++i) {
-    s = s.replace(MACRO[i][0], MACRO[i][1]);
-  }
-  return s;
+    for (let i = 0; i < MACRO.length; ++i) {
+        s = s.replace(MACRO[i][0], MACRO[i][1]);
+    }
+    return s;
 }
 
 // function replaceStatus(s) {
@@ -354,159 +357,172 @@ function applyMacros(s) {
 // }
 
 function createAnchorSlug(s) {
-  return s.toLowerCase().split(' ').join('-');
+    return s.toLowerCase().split(" ").join("-");
 }
 
 function empty(ar) {
-  return !ar.filter(Boolean, ar).length;
+    return !ar.filter(Boolean, ar).length;
 }
 
 function* parseMultiLineGen(filename, s) {
-  if (!s.includes('@vt:')) {
-    return;
-  }
-  const lines = s.split('\n').map(el => el.trim().replace(/\*/, '').replace(/\s/, ''));
-  let grabLine = false;
-  let longDescription = [];
-  let feature = undefined;
-  let noLineCount = 0;
-  for (const line of lines) {
-    if (grabLine) {
-      if (!line) noLineCount++;
-      if (noLineCount >= 2) {
-        if (feature) {
-          feature.longDescription = empty(longDescription) ? [] : longDescription;
-          feature.longTarget = createAnchorSlug(feature.name);
-          yield feature;
-        }
-        grabLine = false;
-        longDescription = [];
-        feature = undefined;
-        noLineCount = 0;
-      }
-      else if (line.indexOf('@vt:') === 0) {
-        if (feature) {
-          feature.longDescription = empty(longDescription) ? [] : longDescription;
-          feature.longTarget = createAnchorSlug(feature.name);
-          yield feature;
-        }
-        grabLine = true;
-        longDescription = [];
-        feature = undefined;
-        noLineCount = 0;
-      } else {
-        //longDescription.push(line);
-        longDescription.push(applyMacros(line));
-        if (line) noLineCount = 0;
-      }
+    if (!s.includes("@vt:")) {
+        return;
     }
-    if (line.indexOf('@vt:') === 0) {
-      feature = parseSingleLine(filename, line);
-      grabLine = true;
+    const lines = s
+        .split("\n")
+        .map((el) => el.trim().replace(/\*/, "").replace(/\s/, ""));
+    let grabLine = false;
+    let longDescription = [];
+    let feature = undefined;
+    let noLineCount = 0;
+    for (const line of lines) {
+        if (grabLine) {
+            if (!line) noLineCount++;
+            if (noLineCount >= 2) {
+                if (feature) {
+                    feature.longDescription = empty(longDescription)
+                        ? []
+                        : longDescription;
+                    feature.longTarget = createAnchorSlug(feature.name);
+                    yield feature;
+                }
+                grabLine = false;
+                longDescription = [];
+                feature = undefined;
+                noLineCount = 0;
+            } else if (line.indexOf("@vt:") === 0) {
+                if (feature) {
+                    feature.longDescription = empty(longDescription)
+                        ? []
+                        : longDescription;
+                    feature.longTarget = createAnchorSlug(feature.name);
+                    yield feature;
+                }
+                grabLine = true;
+                longDescription = [];
+                feature = undefined;
+                noLineCount = 0;
+            } else {
+                //longDescription.push(line);
+                longDescription.push(applyMacros(line));
+                if (line) noLineCount = 0;
+            }
+        }
+        if (line.indexOf("@vt:") === 0) {
+            feature = parseSingleLine(filename, line);
+            grabLine = true;
+        }
     }
-  }
-  if (grabLine && feature) {
-    feature.longDescription = empty(longDescription) ? [] : longDescription;
-    feature.longTarget = createAnchorSlug(feature.name);
-    yield feature;
-  }
+    if (grabLine && feature) {
+        feature.longDescription = empty(longDescription) ? [] : longDescription;
+        feature.longTarget = createAnchorSlug(feature.name);
+        yield feature;
+    }
 }
 
 function parseSingleLine(filename, s) {
-  const line = s.trim();
-  const match = line.match(REX_VT_LINE);
-  if (match !== null) {
-    if (!TYPES.includes(match[2])) {
-      throw new Error(`unkown vt-command type "${match[2]}" specified in "${filename}"`);
+    const line = s.trim();
+    const match = line.match(REX_VT_LINE);
+    if (match !== null) {
+        if (!TYPES.includes(match[2])) {
+            throw new Error(
+                `unkown vt-command type "${match[2]}" specified in "${filename}"`
+            );
+        }
+        return {
+            status: match[1],
+            type: match[2],
+            mnemonic: match[3],
+            name: match[4],
+            sequence: match[5],
+            shortDescription: match[6],
+            longDescription: [],
+            longTarget: "",
+            source: filename,
+        };
     }
-    return {
-      status: match[1],
-      type: match[2],
-      mnemonic: match[3],
-      name: match[4],
-      sequence: match[5],
-      shortDescription: match[6],
-      longDescription: [],
-      longTarget: '',
-      source: filename
-    };
-  }
 }
 
 function getSorter(entry) {
-  switch (entry) {
-    case 'C0':
-    case 'C1':
-      // NOTE: expects hex value notation at last position in sequence
-      return (a, b) => parseInt(a.sequence.slice(-2), 16) - parseInt(b.sequence.slice(-2), 16);
-    case 'OSC':
-      // NOTE: expects the decimal function identifier in mnemonic
-      return (a, b) => parseInt(a.mnemonic) - parseInt(b.mnemonic);
-    case 'DCS':
-      return (a, b) => a.mnemonic > b.mnemonic;
-    case 'CSI':
-    case 'ESC':
-      // default sort order by final byte
-      return (a, b) => {
-        // ugly hack to fix sorting of workaround in HPA sequence "CSI Ps ` "
-        // for HPA compare with length - 2 instead
-        const HPA = 'CSI Ps ` ';
-        const aa = a.sequence === HPA ? a.sequence.slice(0, -1) : a.sequence;
-        const bb = b.sequence === HPA ? b.sequence.slice(0, -1) : b.sequence;
-        return aa.charCodeAt(aa.length - 1) - bb.charCodeAt(bb.length - 1);
-      };
-    default:
-      return (a, b) => a.sequence > b.sequence;
-  }
-};
+    switch (entry) {
+        case "C0":
+        case "C1":
+            // NOTE: expects hex value notation at last position in sequence
+            return (a, b) =>
+                parseInt(a.sequence.slice(-2), 16) -
+                parseInt(b.sequence.slice(-2), 16);
+        case "OSC":
+            // NOTE: expects the decimal function identifier in mnemonic
+            return (a, b) => parseInt(a.mnemonic) - parseInt(b.mnemonic);
+        case "DCS":
+            return (a, b) => a.mnemonic > b.mnemonic;
+        case "CSI":
+        case "ESC":
+            // default sort order by final byte
+            return (a, b) => {
+                // ugly hack to fix sorting of workaround in HPA sequence "CSI Ps ` "
+                // for HPA compare with length - 2 instead
+                const HPA = "CSI Ps ` ";
+                const aa =
+                    a.sequence === HPA ? a.sequence.slice(0, -1) : a.sequence;
+                const bb =
+                    b.sequence === HPA ? b.sequence.slice(0, -1) : b.sequence;
+                return (
+                    aa.charCodeAt(aa.length - 1) - bb.charCodeAt(bb.length - 1)
+                );
+            };
+        default:
+            return (a, b) => a.sequence > b.sequence;
+    }
+}
 
 function postProcessData(features) {
-  const featureTable = {};
-  for (const feature of features) {
-    // feature.status = replaceStatus(feature.status);
-    feature.status = applyMacros(feature.status);
-    if (featureTable[feature.type] === undefined) {
-      featureTable[feature.type] = [];
+    const featureTable = {};
+    for (const feature of features) {
+        // feature.status = replaceStatus(feature.status);
+        feature.status = applyMacros(feature.status);
+        if (featureTable[feature.type] === undefined) {
+            featureTable[feature.type] = [];
+        }
+        featureTable[feature.type].push(feature);
+        if (feature.longDescription.length) {
+            featureTable[feature.type].hasLongDescriptions = true;
+        }
     }
-    featureTable[feature.type].push(feature);
-    if (feature.longDescription.length) {
-      featureTable[feature.type].hasLongDescriptions = true;
+    for (const entry in featureTable) {
+        featureTable[entry].sort(getSorter(entry));
     }
-  }
-  for (const entry in featureTable) {
-    featureTable[entry].sort(getSorter(entry));
-  }
-  // console.error(featureTable);
-  featureTable.version = require('../package.json').version;
-  console.log(Mustache.render(MARKDOWN_TMPL, featureTable));
+    // console.error(featureTable);
+    featureTable.version = require("../package.json").version;
+    console.log(Mustache.render(MARKDOWN_TMPL, featureTable));
 }
 
 function main(filenames) {
-  // console.error(filenames);
-  let leftToProcess = filenames.length;
-  const features = [];
-  for (const filename of filenames) {
-    fs.readFile(filename, 'utf-8', (err, data) => {
-      let match;
-      while ((match = REX_COMMENTS.exec(data)) !== null) {
-        if (match.index === REX_COMMENTS.lastIndex) {
-          REX_COMMENTS.lastIndex++;
-        }
-        if (match[1]) {
-          for (let feature of parseMultiLineGen(filename, match[1])) {
-            if (feature) features.push(feature);
-          }
-        } else {
-          const feature = parseSingleLine(filename, match[2]);
-          if (feature) features.push(feature);
-        }
-      }
-      leftToProcess--;
-      if (!leftToProcess) {
-        postProcessData(features);
-      }
-    });
-  }
+    // console.error(filenames);
+    let leftToProcess = filenames.length;
+    const features = [];
+    for (const filename of filenames) {
+        fs.readFile(filename, "utf-8", (err, data) => {
+            let match;
+            while ((match = REX_COMMENTS.exec(data)) !== null) {
+                if (match.index === REX_COMMENTS.lastIndex) {
+                    REX_COMMENTS.lastIndex++;
+                }
+                if (match[1]) {
+                    for (let feature of parseMultiLineGen(filename, match[1])) {
+                        if (feature) features.push(feature);
+                    }
+                } else {
+                    const feature = parseSingleLine(filename, match[2]);
+                    if (feature) features.push(feature);
+                }
+            }
+            leftToProcess--;
+            if (!leftToProcess) {
+                postProcessData(features);
+            }
+        });
+    }
 }
 
-main(process.argv.slice(2))
+main(process.argv.slice(2));

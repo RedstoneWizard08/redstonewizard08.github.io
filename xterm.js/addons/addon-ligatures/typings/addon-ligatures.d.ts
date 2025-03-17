@@ -8,51 +8,51 @@
  * which is intended to be stable and consumed by external programs.
  */
 
-import { Terminal, ITerminalAddon } from '@xterm/xterm';
+import { Terminal, ITerminalAddon } from "@xterm/xterm";
 
-declare module '@xterm/addon-ligatures' {
-  /**
-   * An xterm.js addon that enables web links.
-   */
-  export class LigaturesAddon implements ITerminalAddon {
+declare module "@xterm/addon-ligatures" {
     /**
-     * Creates a new ligatures addon.
-     *
-     * @param options Options for the ligatures addon.
+     * An xterm.js addon that enables web links.
      */
-    constructor(options?: Partial<ILigatureOptions>);
+    export class LigaturesAddon implements ITerminalAddon {
+        /**
+         * Creates a new ligatures addon.
+         *
+         * @param options Options for the ligatures addon.
+         */
+        constructor(options?: Partial<ILigatureOptions>);
+
+        /**
+         * Activates the addon
+         *
+         * @param terminal The terminal the addon is being loaded in.
+         */
+        public activate(terminal: Terminal): void;
+
+        /**
+         * Disposes the addon.
+         */
+        public dispose(): void;
+    }
 
     /**
-     * Activates the addon
-     *
-     * @param terminal The terminal the addon is being loaded in.
+     * Options for the ligatures addon.
      */
-    public activate(terminal: Terminal): void;
-
-    /**
-     * Disposes the addon.
-     */
-    public dispose(): void;
-  }
-
-  /**
-   * Options for the ligatures addon.
-   */
-  export interface ILigatureOptions {
-    /**
-     * Fallback ligatures to use when the font access API is either not supported by the browser or
-     * access is denied. The default set of ligatures is taken from Iosevka's default "calt"
-     * ligation set: https://typeof.net/Iosevka/
-     *
-     * ```
-     * <-- <--- <<- <- -> ->> --> --->
-     * <== <=== <<= <= => =>> ==> ===> >= >>=
-     * <-> <--> <---> <----> <=> <==> <===> <====> -------->
-     * <~~ <~ ~> ~~> :: ::: == != === !==
-     * := :- :+ <* <*> *> <| <|> |> +: -: =: :>
-     * ++ +++ <!-- <!--- <***>
-     * ```
-     */
-    fallbackLigatures: string[]
-  }
+    export interface ILigatureOptions {
+        /**
+         * Fallback ligatures to use when the font access API is either not supported by the browser or
+         * access is denied. The default set of ligatures is taken from Iosevka's default "calt"
+         * ligation set: https://typeof.net/Iosevka/
+         *
+         * ```
+         * <-- <--- <<- <- -> ->> --> --->
+         * <== <=== <<= <= => =>> ==> ===> >= >>=
+         * <-> <--> <---> <----> <=> <==> <===> <====> -------->
+         * <~~ <~ ~> ~~> :: ::: == != === !==
+         * := :- :+ <* <*> *> <| <|> |> +: -: =: :>
+         * ++ +++ <!-- <!--- <***>
+         * ```
+         */
+        fallbackLigatures: string[];
+    }
 }

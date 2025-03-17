@@ -1,4 +1,4 @@
-import inflate from './tiny-inflate'
+import inflate from "./tiny-inflate";
 
 // Shift size for getting the index-1 table offset.
 const SHIFT_1 = 6 + 5;
@@ -45,7 +45,7 @@ const INDEX_2_BMP_LENGTH = LSCP_INDEX_2_OFFSET + LSCP_INDEX_2_LENGTH;
 // The 2-byte UTF-8 version of the index-2 table follows at offset 2080=0x820.
 // Length 32=0x20 for lead bytes C0..DF, regardless of SHIFT_2.
 const UTF8_2B_INDEX_2_OFFSET = INDEX_2_BMP_LENGTH;
-const UTF8_2B_INDEX_2_LENGTH = 0x800 >> 6;  // U+0800 is the first code point after 2-byte UTF-8
+const UTF8_2B_INDEX_2_LENGTH = 0x800 >> 6; // U+0800 is the first code point after 2-byte UTF-8
 
 // The index-1 table, only used for supplementary code points, at offset 2112=0x840.
 // Variable length, for code points up to highStart, where the last single-value range starts.
@@ -62,73 +62,89 @@ const INDEX_1_OFFSET = UTF8_2B_INDEX_2_OFFSET + UTF8_2B_INDEX_2_LENGTH;
 // The alignment size of a data block. Also the granularity for compaction.
 const DATA_GRANULARITY = 1 << INDEX_SHIFT;
 
-const isBigEndian = (new Uint8Array(new Uint32Array([0x12345678]).buffer)[0] === 0x12);
+const isBigEndian =
+    new Uint8Array(new Uint32Array([0x12345678]).buffer)[0] === 0x12;
 
 class UnicodeTrie {
     private data: Uint32Array;
     private highStart: number;
     private errorValue: number;
-  constructor(data: Uint8Array) {
-      // read binary format
-      
+    constructor(data: Uint8Array) {
+        // read binary format
+
         const view = new DataView(data.buffer);
         this.highStart = view.getUint32(0, true);
         this.errorValue = view.getUint32(4, true);
         let uncompressedLength = view.getUint32(8, true);
         data = data.subarray(12);
 
-      // double inflate the actual trie data
-      data = inflate(data, new Uint8Array(uncompressedLength));
-      data = inflate(data, new Uint8Array(uncompressedLength));
+        // double inflate the actual trie data
+        data = inflate(data, new Uint8Array(uncompressedLength));
+        data = inflate(data, new Uint8Array(uncompressedLength));
 
-      if (isBigEndian) {
-          // swap bytes from little-endian
-          const len = data.length;
-          for (let i = 0; i < len; i += 4) {
-              // Exchange data[i] and data[i + 3]:
-              let x = data[i]; data[i] = data[i+3]; data[i+3] = x;
-              // Exchange data[i + 1] and data[i + 2]:
-              let y = data[i+1]; data[i+1] = data[i+2]; data[i+2] = y;
-          }
-      }
+        if (isBigEndian) {
+            // swap bytes from little-endian
+            const len = data.length;
+            for (let i = 0; i < len; i += 4) {
+                // Exchange data[i] and data[i + 3]:
+                let x = data[i];
+                data[i] = data[i + 3];
+                data[i + 3] = x;
+                // Exchange data[i + 1] and data[i + 2]:
+                let y = data[i + 1];
+                data[i + 1] = data[i + 2];
+                data[i + 2] = y;
+            }
+        }
 
-      this.data = new Uint32Array(data.buffer);
-
-  }
+        this.data = new Uint32Array(data.buffer);
+    }
 
     get(codePoint: number): number {
-    let index;
-    if ((codePoint < 0) || (codePoint > 0x10ffff)) {
-      return this.errorValue;
-    }
+        let index;
+        if (codePoint < 0 || codePoint > 0x10ffff) {
+            return this.errorValue;
+        }
 
-    if ((codePoint < 0xd800) || ((codePoint > 0xdbff) && (codePoint <= 0xffff))) {
-      // Ordinary BMP code point, excluding leading surrogates.
-      // BMP uses a single level lookup.  BMP index starts at offset 0 in the index.
-      // data is stored in the index array itself.
-      index = (this.data[codePoint >> SHIFT_2] << INDEX_SHIFT) + (codePoint & DATA_MASK);
-      return this.data[index];
-    }
+        if (codePoint < 0xd800 || (codePoint > 0xdbff && codePoint <= 0xffff)) {
+            // Ordinary BMP code point, excluding leading surrogates.
+            // BMP uses a single level lookup.  BMP index starts at offset 0 in the index.
+            // data is stored in the index array itself.
+            index =
+                (this.data[codePoint >> SHIFT_2] << INDEX_SHIFT) +
+                (codePoint & DATA_MASK);
+            return this.data[index];
+        }
 
-    if (codePoint <= 0xffff) {
-      // Lead Surrogate Code Point.  A Separate index section is stored for
-      // lead surrogate code units and code points.
-      //   The main index has the code unit data.
-      //   For this function, we need the code point data.
-      index = (this.data[LSCP_INDEX_2_OFFSET + ((codePoint - 0xd800) >> SHIFT_2)] << INDEX_SHIFT) + (codePoint & DATA_MASK);
-      return this.data[index];
-    }
+        if (codePoint <= 0xffff) {
+            // Lead Surrogate Code Point.  A Separate index section is stored for
+            // lead surrogate code units and code points.
+            //   The main index has the code unit data.
+            //   For this function, we need the code point data.
+            index =
+                (this.data[
+                    LSCP_INDEX_2_OFFSET + ((codePoint - 0xd800) >> SHIFT_2)
+                ] <<
+                    INDEX_SHIFT) +
+                (codePoint & DATA_MASK);
+            return this.data[index];
+        }
 
-    if (codePoint < this.highStart) {
-      // Supplemental code point, use two-level lookup.
-      index = this.data[(INDEX_1_OFFSET - OMITTED_BMP_INDEX_1_LENGTH) + (codePoint >> SHIFT_1)];
-      index = this.data[index + ((codePoint >> SHIFT_2) & INDEX_2_MASK)];
-      index = (index << INDEX_SHIFT) + (codePoint & DATA_MASK);
-      return this.data[index];
-    }
+        if (codePoint < this.highStart) {
+            // Supplemental code point, use two-level lookup.
+            index =
+                this.data[
+                    INDEX_1_OFFSET -
+                        OMITTED_BMP_INDEX_1_LENGTH +
+                        (codePoint >> SHIFT_1)
+                ];
+            index = this.data[index + ((codePoint >> SHIFT_2) & INDEX_2_MASK)];
+            index = (index << INDEX_SHIFT) + (codePoint & DATA_MASK);
+            return this.data[index];
+        }
 
-    return this.data[this.data.length - DATA_GRANULARITY];
-  }
+        return this.data[this.data.length - DATA_GRANULARITY];
+    }
 }
 
-export default UnicodeTrie
+export default UnicodeTrie;

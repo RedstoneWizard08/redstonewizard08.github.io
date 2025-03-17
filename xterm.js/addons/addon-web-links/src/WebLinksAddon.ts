@@ -3,9 +3,9 @@
  * @license MIT
  */
 
-import type { Terminal, ITerminalAddon, IDisposable } from '@xterm/xterm';
-import type { WebLinksAddon as IWebLinksApi } from '@xterm/addon-web-links';
-import { ILinkProviderOptions, WebLinkProvider } from './WebLinkProvider';
+import type { Terminal, ITerminalAddon, IDisposable } from "@xterm/xterm";
+import type { WebLinksAddon as IWebLinksApi } from "@xterm/addon-web-links";
+import { ILinkProviderOptions, WebLinkProvider } from "./WebLinkProvider";
 
 // consider everthing starting with http:// or https://
 // up to first whitespace, `"` or `'` as url
@@ -18,41 +18,42 @@ import { ILinkProviderOptions, WebLinkProvider } from './WebLinkProvider';
 // - final interpunction like ,.!?
 // - any sort of brackets <>()[]{} (not spec conform, but often used to enclose urls)
 // - unsafe chars from rfc1738: {}|\^~[]`
-const strictUrlRegex = /(https?|HTTPS?):[/]{2}[^\s"'!*(){}|\\\^<>`]*[^\s"':,.!?{}|\\\^~\[\]`()<>]/;
-
+const strictUrlRegex =
+    /(https?|HTTPS?):[/]{2}[^\s"'!*(){}|\\\^<>`]*[^\s"':,.!?{}|\\\^~\[\]`()<>]/;
 
 function handleLink(event: MouseEvent, uri: string): void {
-  const newWindow = window.open();
-  if (newWindow) {
-    try {
-      newWindow.opener = null;
-    } catch {
-      // no-op, Electron can throw
+    const newWindow = window.open();
+    if (newWindow) {
+        try {
+            newWindow.opener = null;
+        } catch {
+            // no-op, Electron can throw
+        }
+        newWindow.location.href = uri;
+    } else {
+        console.warn("Opening link blocked as opener could not be cleared");
     }
-    newWindow.location.href = uri;
-  } else {
-    console.warn('Opening link blocked as opener could not be cleared');
-  }
 }
 
-export class WebLinksAddon implements ITerminalAddon , IWebLinksApi {
-  private _terminal: Terminal | undefined;
-  private _linkProvider: IDisposable | undefined;
+export class WebLinksAddon implements ITerminalAddon, IWebLinksApi {
+    private _terminal: Terminal | undefined;
+    private _linkProvider: IDisposable | undefined;
 
-  constructor(
-    private _handler: (event: MouseEvent, uri: string) => void = handleLink,
-    private _options: ILinkProviderOptions = {}
-  ) {
-  }
+    constructor(
+        private _handler: (event: MouseEvent, uri: string) => void = handleLink,
+        private _options: ILinkProviderOptions = {}
+    ) {}
 
-  public activate(terminal: Terminal): void {
-    this._terminal = terminal;
-    const options = this._options as ILinkProviderOptions;
-    const regex = options.urlRegex || strictUrlRegex;
-    this._linkProvider = this._terminal.registerLinkProvider(new WebLinkProvider(this._terminal, regex, this._handler, options));
-  }
+    public activate(terminal: Terminal): void {
+        this._terminal = terminal;
+        const options = this._options as ILinkProviderOptions;
+        const regex = options.urlRegex || strictUrlRegex;
+        this._linkProvider = this._terminal.registerLinkProvider(
+            new WebLinkProvider(this._terminal, regex, this._handler, options)
+        );
+    }
 
-  public dispose(): void {
-    this._linkProvider?.dispose();
-  }
+    public dispose(): void {
+        this._linkProvider?.dispose();
+    }
 }

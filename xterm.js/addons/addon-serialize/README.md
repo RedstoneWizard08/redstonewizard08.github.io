@@ -21,7 +21,7 @@ const serializeAddon = new SerializeAddon();
 terminal.loadAddon(serializeAddon);
 
 terminal.write("something...", () => {
-  console.log(serializeAddon.serialize());
+    console.log(serializeAddon.serialize());
 });
 ```
 

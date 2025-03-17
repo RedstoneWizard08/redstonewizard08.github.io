@@ -4,5 +4,5 @@
  */
 
 export interface ILigatureOptions {
-  fallbackLigatures: string[];
+    fallbackLigatures: string[];
 }

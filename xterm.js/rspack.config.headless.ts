@@ -13,32 +13,32 @@ import { defineConfig } from "@rspack/cli";
  * paths output by tsc (because of `baseUrl` and `paths` in `tsconfig.json`.
  */
 export default defineConfig({
-  entry: './out/headless/public/Terminal.js',
-  devtool: 'source-map',
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: ["source-map-loader"],
-        enforce: "pre",
-        exclude: /node_modules/
-      }
-    ]
-  },
-  resolve: {
-    modules: ['./node_modules'],
-    extensions: [ '.js' ],
-    alias: {
-      common: path.resolve('./out/common'),
-      headless: path.resolve('./out/headless')
-    }
-  },
-  output: {
-    filename: 'xterm-headless.js',
-    path: path.resolve('./headless/lib-headless'),
-    library: {
-      type: 'commonjs'
-    }
-  },
-  mode: 'production'
+    entry: "./out/headless/public/Terminal.js",
+    devtool: "source-map",
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: ["source-map-loader"],
+                enforce: "pre",
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    resolve: {
+        modules: ["./node_modules"],
+        extensions: [".js"],
+        alias: {
+            common: path.resolve("./out/common"),
+            headless: path.resolve("./out/headless"),
+        },
+    },
+    output: {
+        filename: "xterm-headless.js",
+        path: path.resolve("./headless/lib-headless"),
+        library: {
+            type: "commonjs",
+        },
+    },
+    mode: "production",
 });

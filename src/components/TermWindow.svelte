@@ -11,6 +11,7 @@
     import { WebLinksAddon } from "@xterm/addon-web-links";
     import { LigaturesAddon } from "../lib/ligatures/addon";
     import type { ITerminal } from "@xterm/xterm/src/browser/Types";
+    import { setupSwc } from "../lib/term/swc";
 
     let win: HTMLDivElement;
     
@@ -18,8 +19,12 @@
     // const history = [];
     // let historyPos = 0;
 
-    onMount(() => {
+    onMount(async () => {
         if ($terminal) $terminal.dispose();
+
+        await setupSwc();
+
+        console.log("SWC good");
 
         const search = new SearchAddon();
         const webgl = new WebglAddon();
@@ -45,7 +50,9 @@
         $terminal.loadAddon(webgl);
         $terminal.loadAddon(ligatures);
 
-        $terminal.onData((e) => {
+        console.log("TERM good");
+
+        $terminal.onData(async (e) => {
             switch (e) {
                 case "\u0003":
                     $termBuffer = "";
@@ -62,7 +69,7 @@
                     $terminal.write("\t");
                     break;
                 case "\r":
-                    executeScript();
+                    await executeScript();
                     $termBuffer = "";
                     break;
                 case "\u007F":

@@ -1,4 +1,5 @@
 import { intToU32Bytes } from "./util";
+import ls from "./cmd/ls.ts?raw";
 
 export type DefaultFiles<K, V> = readonly [...[K, V][]];
 
@@ -58,7 +59,7 @@ export const defaultDirs = [
 
 export const defaultFiles: DefaultFiles<string, Uint8Array> = [
     ["/usr/bin/echo", builtInBin("echo")],
-    ["/usr/bin/ls", builtInBin("ls")],
+    ["/usr/bin/ls", new TextEncoder().encode(ls)],
     ["/usr/bin/cat", builtInBin("cat")],
     ["/usr/bin/rsh", builtInBin("rsh")],
     ["/usr/bin/mkdir", builtInBin("mkdir")],

@@ -5,6 +5,6 @@
 
 // @ts-check
 
-const startServer = require('./server.js');
+const startServer = require("./server.js");
 
 startServer();

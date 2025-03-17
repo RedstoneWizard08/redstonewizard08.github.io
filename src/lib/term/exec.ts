@@ -9,10 +9,11 @@ import { readBinFile } from "./bin";
 import { terminal } from "./terminal";
 import { logError } from "./log";
 import { vfs } from "./vfs";
+import { evalScript, isScriptCommand } from "./swc";
 
 export const pathVar = writable<string>("/usr/bin:/usr/local/bin");
 
-export const executeScript = () => {
+export const executeScript = async () => {
     const prompt = get(termPrompt);
     const buf = get(termBuffer);
     const commands = splitToCommands(buf);
@@ -77,12 +78,29 @@ export const executeScript = () => {
             const contents = vfs.readdir(fullPath) ?? [];
 
             for (const item of contents) {
-                if ((item.type == "file" || item.type == "symlink") && item.name == cmd) {
+                if (
+                    (item.type == "file" || item.type == "symlink") &&
+                    item.name == cmd
+                ) {
                     if (canExecute(get(uid), get(gid), item)) {
-                        try {
-                            const bin = readBinFile(
-                                vfs.read(`${fullPath}/${item.name}`)!.contents
+                        const content = vfs.read(
+                            `${fullPath}/${item.name}`
+                        )!.contents;
+
+                        if (isScriptCommand(content)) {
+                            const argv = [cmd, ...args];
+
+                            await evalScript(
+                                new TextDecoder().decode(content),
+                                argv
                             );
+
+                            found = true;
+                            break outer;
+                        }
+
+                        try {
+                            const bin = readBinFile(content);
 
                             const toExec = intrinsicCommands.get(bin);
 

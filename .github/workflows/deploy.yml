@@ -18,9 +18,9 @@ jobs:
                   bun-version: latest
             - run: bun install
             - run: |
-                bash build-xterm.sh
-                bun install
-                bun run build
+                  bash build-xterm.sh
+                  bun install
+                  bun run build
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
               with:

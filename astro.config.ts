@@ -7,6 +7,7 @@ import robotsTxt from "astro-robots-txt";
 import compress from "astro-compress";
 import uno from "unocss/astro";
 import svelte from "@astrojs/svelte";
+import wasm from "vite-plugin-wasm";
 
 export default defineConfig({
     prefetch: true,
@@ -26,6 +27,8 @@ export default defineConfig({
     ],
 
     vite: {
+        plugins: [wasm()],
+
         server: {
             hmr: {
                 port: 4000,
@@ -43,6 +46,12 @@ export default defineConfig({
                     api: "modern-compiler",
                 },
             },
+        },
+
+        optimizeDeps: {
+            exclude: [
+                "@swc/wasm-web",
+            ],
         },
     },
 

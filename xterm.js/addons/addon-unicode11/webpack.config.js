@@ -3,37 +3,37 @@
  * @license MIT
  */
 
-const path = require('path');
+const path = require("path");
 
-const addonName = 'Unicode11Addon';
-const mainFile = 'addon-unicode11.js';
+const addonName = "Unicode11Addon";
+const mainFile = "addon-unicode11.js";
 
 module.exports = {
-  entry: `./out/${addonName}.js`,
-  devtool: 'source-map',
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: ["source-map-loader"],
-        enforce: "pre",
-        exclude: /node_modules/
-      }
-    ]
-  },
-  resolve: {
-    modules: ['./node_modules'],
-    extensions: [ '.js' ],
-    alias: {
-      common: path.resolve('../../out/common')
-    }
-  },
-  output: {
-    filename: mainFile,
-    path: path.resolve('./lib'),
-    library: addonName,
-    libraryTarget: 'umd',
-    globalObject: 'this'
-  },
-  mode: 'production'
+    entry: `./out/${addonName}.js`,
+    devtool: "source-map",
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: ["source-map-loader"],
+                enforce: "pre",
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    resolve: {
+        modules: ["./node_modules"],
+        extensions: [".js"],
+        alias: {
+            common: path.resolve("../../out/common"),
+        },
+    },
+    output: {
+        filename: mainFile,
+        path: path.resolve("./lib"),
+        library: addonName,
+        libraryTarget: "umd",
+        globalObject: "this",
+    },
+    mode: "production",
 };

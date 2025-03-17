@@ -3,7 +3,7 @@
  * @license MIT
  */
 
-import { ICharset } from 'common/Types';
+import { ICharset } from "common/Types";
 
 /**
  * The character sets supported by the terminal. These enable several languages
@@ -15,7 +15,7 @@ export const CHARSETS: { [key: string]: ICharset | undefined } = {};
 /**
  * The default character set, US.
  */
-export const DEFAULT_CHARSET: ICharset | undefined = CHARSETS['B'];
+export const DEFAULT_CHARSET: ICharset | undefined = CHARSETS["B"];
 
 /**
  * DEC Special Character and Line Drawing Set.
@@ -27,38 +27,38 @@ export const DEFAULT_CHARSET: ICharset | undefined = CHARSETS['B'];
  * when running vttest however.
  * The table below now uses xterm's output from vttest.
  */
-CHARSETS['0'] = {
-  '`': '\u25c6', // '◆'
-  'a': '\u2592', // '▒'
-  'b': '\u2409', // '␉' (HT)
-  'c': '\u240c', // '␌' (FF)
-  'd': '\u240d', // '␍' (CR)
-  'e': '\u240a', // '␊' (LF)
-  'f': '\u00b0', // '°'
-  'g': '\u00b1', // '±'
-  'h': '\u2424', // '␤' (NL)
-  'i': '\u240b', // '␋' (VT)
-  'j': '\u2518', // '┘'
-  'k': '\u2510', // '┐'
-  'l': '\u250c', // '┌'
-  'm': '\u2514', // '└'
-  'n': '\u253c', // '┼'
-  'o': '\u23ba', // '⎺'
-  'p': '\u23bb', // '⎻'
-  'q': '\u2500', // '─'
-  'r': '\u23bc', // '⎼'
-  's': '\u23bd', // '⎽'
-  't': '\u251c', // '├'
-  'u': '\u2524', // '┤'
-  'v': '\u2534', // '┴'
-  'w': '\u252c', // '┬'
-  'x': '\u2502', // '│'
-  'y': '\u2264', // '≤'
-  'z': '\u2265', // '≥'
-  '{': '\u03c0', // 'π'
-  '|': '\u2260', // '≠'
-  '}': '\u00a3', // '£'
-  '~': '\u00b7'  // '·'
+CHARSETS["0"] = {
+    "`": "\u25c6", // '◆'
+    a: "\u2592", // '▒'
+    b: "\u2409", // '␉' (HT)
+    c: "\u240c", // '␌' (FF)
+    d: "\u240d", // '␍' (CR)
+    e: "\u240a", // '␊' (LF)
+    f: "\u00b0", // '°'
+    g: "\u00b1", // '±'
+    h: "\u2424", // '␤' (NL)
+    i: "\u240b", // '␋' (VT)
+    j: "\u2518", // '┘'
+    k: "\u2510", // '┐'
+    l: "\u250c", // '┌'
+    m: "\u2514", // '└'
+    n: "\u253c", // '┼'
+    o: "\u23ba", // '⎺'
+    p: "\u23bb", // '⎻'
+    q: "\u2500", // '─'
+    r: "\u23bc", // '⎼'
+    s: "\u23bd", // '⎽'
+    t: "\u251c", // '├'
+    u: "\u2524", // '┤'
+    v: "\u2534", // '┴'
+    w: "\u252c", // '┬'
+    x: "\u2502", // '│'
+    y: "\u2264", // '≤'
+    z: "\u2265", // '≥'
+    "{": "\u03c0", // 'π'
+    "|": "\u2260", // '≠'
+    "}": "\u00a3", // '£'
+    "~": "\u00b7", // '·'
 };
 
 /**
@@ -66,31 +66,31 @@ CHARSETS['0'] = {
  * ESC (A
  * Reference: http://vt100.net/docs/vt220-rm/table2-5.html
  */
-CHARSETS['A'] = {
-  '#': '£'
+CHARSETS["A"] = {
+    "#": "£",
 };
 
 /**
  * United States character set
  * ESC (B
  */
-CHARSETS['B'] = undefined;
+CHARSETS["B"] = undefined;
 
 /**
  * Dutch character set
  * ESC (4
  * Reference: http://vt100.net/docs/vt220-rm/table2-6.html
  */
-CHARSETS['4'] = {
-  '#': '£',
-  '@': '¾',
-  '[': 'ij',
-  '\\': '½',
-  ']': '|',
-  '{': '¨',
-  '|': 'f',
-  '}': '¼',
-  '~': '´'
+CHARSETS["4"] = {
+    "#": "£",
+    "@": "¾",
+    "[": "ij",
+    "\\": "½",
+    "]": "|",
+    "{": "¨",
+    "|": "f",
+    "}": "¼",
+    "~": "´",
 };
 
 /**
@@ -98,17 +98,16 @@ CHARSETS['4'] = {
  * ESC (C or ESC (5
  * Reference: http://vt100.net/docs/vt220-rm/table2-7.html
  */
-CHARSETS['C'] =
-CHARSETS['5'] = {
-  '[': 'Ä',
-  '\\': 'Ö',
-  ']': 'Å',
-  '^': 'Ü',
-  '`': 'é',
-  '{': 'ä',
-  '|': 'ö',
-  '}': 'å',
-  '~': 'ü'
+CHARSETS["C"] = CHARSETS["5"] = {
+    "[": "Ä",
+    "\\": "Ö",
+    "]": "Å",
+    "^": "Ü",
+    "`": "é",
+    "{": "ä",
+    "|": "ö",
+    "}": "å",
+    "~": "ü",
 };
 
 /**
@@ -116,16 +115,16 @@ CHARSETS['5'] = {
  * ESC (R
  * Reference: http://vt100.net/docs/vt220-rm/table2-8.html
  */
-CHARSETS['R'] = {
-  '#': '£',
-  '@': 'à',
-  '[': '°',
-  '\\': 'ç',
-  ']': '§',
-  '{': 'é',
-  '|': 'ù',
-  '}': 'è',
-  '~': '¨'
+CHARSETS["R"] = {
+    "#": "£",
+    "@": "à",
+    "[": "°",
+    "\\": "ç",
+    "]": "§",
+    "{": "é",
+    "|": "ù",
+    "}": "è",
+    "~": "¨",
 };
 
 /**
@@ -133,17 +132,17 @@ CHARSETS['R'] = {
  * ESC (Q
  * Reference: http://vt100.net/docs/vt220-rm/table2-9.html
  */
-CHARSETS['Q'] = {
-  '@': 'à',
-  '[': 'â',
-  '\\': 'ç',
-  ']': 'ê',
-  '^': 'î',
-  '`': 'ô',
-  '{': 'é',
-  '|': 'ù',
-  '}': 'è',
-  '~': 'û'
+CHARSETS["Q"] = {
+    "@": "à",
+    "[": "â",
+    "\\": "ç",
+    "]": "ê",
+    "^": "î",
+    "`": "ô",
+    "{": "é",
+    "|": "ù",
+    "}": "è",
+    "~": "û",
 };
 
 /**
@@ -151,15 +150,15 @@ CHARSETS['Q'] = {
  * ESC (K
  * Reference: http://vt100.net/docs/vt220-rm/table2-10.html
  */
-CHARSETS['K'] = {
-  '@': '§',
-  '[': 'Ä',
-  '\\': 'Ö',
-  ']': 'Ü',
-  '{': 'ä',
-  '|': 'ö',
-  '}': 'ü',
-  '~': 'ß'
+CHARSETS["K"] = {
+    "@": "§",
+    "[": "Ä",
+    "\\": "Ö",
+    "]": "Ü",
+    "{": "ä",
+    "|": "ö",
+    "}": "ü",
+    "~": "ß",
 };
 
 /**
@@ -167,17 +166,17 @@ CHARSETS['K'] = {
  * ESC (Y
  * Reference: http://vt100.net/docs/vt220-rm/table2-11.html
  */
-CHARSETS['Y'] = {
-  '#': '£',
-  '@': '§',
-  '[': '°',
-  '\\': 'ç',
-  ']': 'é',
-  '`': 'ù',
-  '{': 'à',
-  '|': 'ò',
-  '}': 'è',
-  '~': 'ì'
+CHARSETS["Y"] = {
+    "#": "£",
+    "@": "§",
+    "[": "°",
+    "\\": "ç",
+    "]": "é",
+    "`": "ù",
+    "{": "à",
+    "|": "ò",
+    "}": "è",
+    "~": "ì",
 };
 
 /**
@@ -185,18 +184,17 @@ CHARSETS['Y'] = {
  * ESC (E or ESC (6
  * Reference: http://vt100.net/docs/vt220-rm/table2-12.html
  */
-CHARSETS['E'] =
-CHARSETS['6'] = {
-  '@': 'Ä',
-  '[': 'Æ',
-  '\\': 'Ø',
-  ']': 'Å',
-  '^': 'Ü',
-  '`': 'ä',
-  '{': 'æ',
-  '|': 'ø',
-  '}': 'å',
-  '~': 'ü'
+CHARSETS["E"] = CHARSETS["6"] = {
+    "@": "Ä",
+    "[": "Æ",
+    "\\": "Ø",
+    "]": "Å",
+    "^": "Ü",
+    "`": "ä",
+    "{": "æ",
+    "|": "ø",
+    "}": "å",
+    "~": "ü",
 };
 
 /**
@@ -204,15 +202,15 @@ CHARSETS['6'] = {
  * ESC (Z
  * Reference: http://vt100.net/docs/vt220-rm/table2-13.html
  */
-CHARSETS['Z'] = {
-  '#': '£',
-  '@': '§',
-  '[': '¡',
-  '\\': 'Ñ',
-  ']': '¿',
-  '{': '°',
-  '|': 'ñ',
-  '}': 'ç'
+CHARSETS["Z"] = {
+    "#": "£",
+    "@": "§",
+    "[": "¡",
+    "\\": "Ñ",
+    "]": "¿",
+    "{": "°",
+    "|": "ñ",
+    "}": "ç",
 };
 
 /**
@@ -220,18 +218,17 @@ CHARSETS['Z'] = {
  * ESC (H or ESC (7
  * Reference: http://vt100.net/docs/vt220-rm/table2-14.html
  */
-CHARSETS['H'] =
-CHARSETS['7'] = {
-  '@': 'É',
-  '[': 'Ä',
-  '\\': 'Ö',
-  ']': 'Å',
-  '^': 'Ü',
-  '`': 'é',
-  '{': 'ä',
-  '|': 'ö',
-  '}': 'å',
-  '~': 'ü'
+CHARSETS["H"] = CHARSETS["7"] = {
+    "@": "É",
+    "[": "Ä",
+    "\\": "Ö",
+    "]": "Å",
+    "^": "Ü",
+    "`": "é",
+    "{": "ä",
+    "|": "ö",
+    "}": "å",
+    "~": "ü",
 };
 
 /**
@@ -239,18 +236,18 @@ CHARSETS['7'] = {
  * ESC (=
  * Reference: http://vt100.net/docs/vt220-rm/table2-15.html
  */
-CHARSETS['='] = {
-  '#': 'ù',
-  '@': 'à',
-  '[': 'é',
-  '\\': 'ç',
-  ']': 'ê',
-  '^': 'î',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  '_': 'è',
-  '`': 'ô',
-  '{': 'ä',
-  '|': 'ö',
-  '}': 'ü',
-  '~': 'û'
+CHARSETS["="] = {
+    "#": "ù",
+    "@": "à",
+    "[": "é",
+    "\\": "ç",
+    "]": "ê",
+    "^": "î",
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    _: "è",
+    "`": "ô",
+    "{": "ä",
+    "|": "ö",
+    "}": "ü",
+    "~": "û",
 };

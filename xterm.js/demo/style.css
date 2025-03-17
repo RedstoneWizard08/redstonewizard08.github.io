@@ -16,7 +16,7 @@ h1 {
 
 p {
     font-size: 0.9em;
-    font-style: italic
+    font-style: italic;
 }
 
 #option-container {
@@ -40,7 +40,6 @@ pre {
     word-wrap: break-word;
     white-space: pre-wrap;
 }
-
 
 #container {
     display: flex;
@@ -82,7 +81,7 @@ div:first-of-type.grid {
 /* Create an active/current tablink class */
 .tab button.active {
     background-color: #ccc;
-  }
+}
 
 /* Style the tab content */
 .tabContent {
@@ -106,7 +105,7 @@ div:first-of-type.grid {
 }
 
 .vt-button * {
-  margin-right: 1em;
+    margin-right: 1em;
 }
 input#opt-cols_rows {
     width: 6em;

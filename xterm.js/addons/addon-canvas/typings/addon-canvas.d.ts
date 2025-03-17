@@ -3,41 +3,41 @@
  * @license MIT
  */
 
-import { Terminal, ITerminalAddon, IEvent } from '@xterm/xterm';
+import { Terminal, ITerminalAddon, IEvent } from "@xterm/xterm";
 
-declare module '@xterm/addon-canvas' {
-  /**
-   * An xterm.js addon that provides search functionality.
-   */
-  export class CanvasAddon implements ITerminalAddon {
-    public textureAtlas?: HTMLCanvasElement;
-
+declare module "@xterm/addon-canvas" {
     /**
-     * An event that is fired when the texture atlas of the renderer changes.
+     * An xterm.js addon that provides search functionality.
      */
-    public readonly onChangeTextureAtlas: IEvent<HTMLCanvasElement>;
+    export class CanvasAddon implements ITerminalAddon {
+        public textureAtlas?: HTMLCanvasElement;
 
-    /**
-     * An event that is fired when the a new page is added to the texture atlas.
-     */
-    public readonly onAddTextureAtlasCanvas: IEvent<HTMLCanvasElement>;
+        /**
+         * An event that is fired when the texture atlas of the renderer changes.
+         */
+        public readonly onChangeTextureAtlas: IEvent<HTMLCanvasElement>;
 
-    constructor();
+        /**
+         * An event that is fired when the a new page is added to the texture atlas.
+         */
+        public readonly onAddTextureAtlasCanvas: IEvent<HTMLCanvasElement>;
 
-    /**
-     * Activates the addon.
-     * @param terminal The terminal the addon is being loaded in.
-     */
-    public activate(terminal: Terminal): void;
+        constructor();
 
-    /**
-     * Disposes the addon.
-     */
-    public dispose(): void;
+        /**
+         * Activates the addon.
+         * @param terminal The terminal the addon is being loaded in.
+         */
+        public activate(terminal: Terminal): void;
 
-    /**
-     * Clears the terminal's texture atlas and triggers a redraw.
-     */
-    public clearTextureAtlas(): void;
-  }
+        /**
+         * Disposes the addon.
+         */
+        public dispose(): void;
+
+        /**
+         * Clears the terminal's texture atlas and triggers a redraw.
+         */
+        public clearTextureAtlas(): void;
+    }
 }

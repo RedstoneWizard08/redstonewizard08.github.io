@@ -3,35 +3,43 @@
  * @license MIT
  */
 
-import test from '@playwright/test';
-import { ISharedRendererTestContext, injectSharedRendererTests, injectSharedRendererTestsStandalone } from '../../../out-test/playwright/SharedRendererTests';
-import { ITestContext, createTestContext, openTerminal } from '../../../out-test/playwright/TestUtils';
+import test from "@playwright/test";
+import {
+    ISharedRendererTestContext,
+    injectSharedRendererTests,
+    injectSharedRendererTestsStandalone,
+} from "../../../out-test/playwright/SharedRendererTests";
+import {
+    ITestContext,
+    createTestContext,
+    openTerminal,
+} from "../../../out-test/playwright/TestUtils";
 
 let ctx: ITestContext;
 const ctxWrapper: ISharedRendererTestContext = {
-  value: undefined,
-  skipCanvasExceptions: true
+    value: undefined,
+    skipCanvasExceptions: true,
 } as any;
 test.beforeAll(async ({ browser }) => {
-  ctx = await createTestContext(browser);
-  await openTerminal(ctx);
-  ctxWrapper.value = ctx;
-  await ctx.page.evaluate(`
+    ctx = await createTestContext(browser);
+    await openTerminal(ctx);
+    ctxWrapper.value = ctx;
+    await ctx.page.evaluate(`
     window.addon = new window.CanvasAddon(true);
     window.term.loadAddon(window.addon);
   `);
 });
 test.afterAll(async () => await ctx.page.close());
 
-test.describe('Canvas Renderer Integration Tests', () => {
-  // HACK: The tests fail for an unknown reason
-  test.skip(({ browserName }) => browserName === 'webkit');
+test.describe("Canvas Renderer Integration Tests", () => {
+    // HACK: The tests fail for an unknown reason
+    test.skip(({ browserName }) => browserName === "webkit");
 
-  injectSharedRendererTests(ctxWrapper);
-  injectSharedRendererTestsStandalone(ctxWrapper, async () => {
-    await ctx.page.evaluate(`
+    injectSharedRendererTests(ctxWrapper);
+    injectSharedRendererTestsStandalone(ctxWrapper, async () => {
+        await ctx.page.evaluate(`
       window.addon = new window.CanvasAddon(true);
       window.term.loadAddon(window.addon);
     `);
-  });
+    });
 });

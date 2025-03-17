@@ -1,6 +1,6 @@
 declare module "$$/system/vfs" {
     export type FileTree = Map<string, FileInfo | FolderInfo | SymLinkInfo>;
-    
+
     export type VFSFileStats =
         | (VFSEntry & { exists: true })
         | { exists: false };

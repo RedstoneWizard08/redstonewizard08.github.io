@@ -1,14 +1,14 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2021",
-    "rootDir": ".",
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2021",
+        "rootDir": ".",
 
-    "sourceMap": true,
-    "removeComments": true,
-    "pretty": true,
+        "sourceMap": true,
+        "removeComments": true,
+        "pretty": true,
 
-    "incremental": true,
-    "experimentalDecorators": true
-  }
+        "incremental": true,
+        "experimentalDecorators": true
+    }
 }
