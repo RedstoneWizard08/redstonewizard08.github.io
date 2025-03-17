@@ -4,6 +4,7 @@
     "exclude": ["dist"],
     "compilerOptions": {
         "strictNullChecks": true,
+        "esModuleInterop": true,
         "lib": [
             "DOM",
             "DOM.Iterable",

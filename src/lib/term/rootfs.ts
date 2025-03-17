@@ -75,4 +75,12 @@ export const defaultFiles: DefaultFiles<string, Uint8Array> = [
     ["/usr/bin/mv", builtInBin("mv")],
     ["/usr/bin/pwd", builtInBin("pwd")],
     ["/usr/bin/rmdir", builtInBin("rmdir")],
+    ["/usr/bin/clear", builtInBin("clear")],
+    ["/usr/bin/ln", builtInBin("ln")],
+    ["/usr/bin/id", builtInBin("id")],
+    ["/usr/bin/reset", builtInBin("reset")],
+];
+
+export const defaultSymlinks: [string, string][] = [
+    ["/usr/bin/clear", "/usr/bin/cls"],
 ];

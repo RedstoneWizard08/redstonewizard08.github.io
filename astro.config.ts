@@ -9,7 +9,6 @@ import uno from "unocss/astro";
 import svelte from "@astrojs/svelte";
 
 export default defineConfig({
-    // site: "https://example.com",
     prefetch: true,
 
     integrations: [
@@ -49,6 +48,7 @@ export default defineConfig({
 
     server: {
         port: 4000,
-        // allowedHosts: true,
     },
+
+    site: "https://redstonewizard08.github.io",
 });

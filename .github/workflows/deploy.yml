@@ -17,11 +17,11 @@ jobs:
               with:
                   bun-version: latest
             - run: bun install
-            - run: bun run nuxt build --preset github_pages
+            - run: bun run build
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v1
               with:
-                  path: ./.output/public
+                  path: ./dist
     deploy:
         needs: build
         permissions:

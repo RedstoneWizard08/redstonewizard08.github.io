@@ -1,4 +1,4 @@
-import type { VFSEntry } from "./fs";
+import type { VFSEntry } from "$$/system/vfs";
 
 export interface TargetPermissions {
     read: boolean;
@@ -79,7 +79,7 @@ export const canWrite = (uid: number, gid: number, file: VFSEntry) => {
 
 export const canExecute = (uid: number, gid: number, file: VFSEntry) => {
     const perms = readFilePermissions(file.permissions);
-    
+
     const target =
         file.owner == uid
             ? perms.owner
@@ -89,3 +89,22 @@ export const canExecute = (uid: number, gid: number, file: VFSEntry) => {
 
     return target.execute;
 };
+
+export const printTargetPermissions = (perms: TargetPermissions) => {
+    return (
+        (perms.read ? "r" : "-") +
+        (perms.write ? "w" : "-") +
+        (perms.execute ? "x" : "-")
+    );
+};
+
+export const printFilePermissions = (perms: FilePermissions) => {
+    return (
+        printTargetPermissions(perms.owner) +
+        printTargetPermissions(perms.group) +
+        printTargetPermissions(perms.other)
+    );
+};
+
+export const printPermissions = (mask: number) =>
+    printFilePermissions(readFilePermissions(mask));

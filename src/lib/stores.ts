@@ -11,6 +11,6 @@ export const termBuffer = writable<string>("");
  */
 export const termCursorPosition = writable<number>(0);
 export const termContent = writable<string>("");
-export const termPrompt = writable<string>("$&nbsp;");
+export const termPrompt = writable<string>("$ ");
 export const termClipboardPermission = writable<boolean>(false);
 export const termHistory = writable<string[]>([]);

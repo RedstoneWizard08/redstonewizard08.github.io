@@ -1,19 +1,23 @@
 import * as path from "@std/path";
 import { get, writable } from "svelte/store";
-import { termContent } from "../stores";
-import { cwd, intrinsicCommands, vfs } from "./cmds";
+import { termBuffer, termPrompt } from "../stores";
+import { intrinsicCommands } from "./cmds";
 import { splitToCommands } from "./parse";
-import { htmlText, styled } from "./util";
 import { canExecute } from "./perms";
-import { gid, uid } from "./info";
+import { cwd, gid, uid } from "./info";
 import { readBinFile } from "./bin";
+import { terminal } from "./terminal";
+import { logError } from "./log";
+import { vfs } from "./vfs";
 
 export const pathVar = writable<string>("/usr/bin:/usr/local/bin");
 
-export const executeScript = (prompt: string, buf: string) => {
+export const executeScript = () => {
+    const prompt = get(termPrompt);
+    const buf = get(termBuffer);
     const commands = splitToCommands(buf);
 
-    termContent.update((v) => v + prompt + buf + "<br />");
+    get(terminal).write("\r\n");
 
     for (const text of commands) {
         const args: string[] = [];
@@ -58,11 +62,7 @@ export const executeScript = (prompt: string, buf: string) => {
         }
 
         if (args.length <= 0) {
-            termContent.update(
-                (v) =>
-                    v + styled("color-red", "No command provided!") + "<br />"
-            );
-
+            logError("No command provided!");
             continue;
         }
 
@@ -77,7 +77,7 @@ export const executeScript = (prompt: string, buf: string) => {
             const contents = vfs.readdir(fullPath) ?? [];
 
             for (const item of contents) {
-                if (item.type == "file" && item.name == cmd) {
+                if ((item.type == "file" || item.type == "symlink") && item.name == cmd) {
                     if (canExecute(get(uid), get(gid), item)) {
                         try {
                             const bin = readBinFile(
@@ -89,36 +89,17 @@ export const executeScript = (prompt: string, buf: string) => {
                             if (toExec) {
                                 toExec!(args);
                             } else {
-                                termContent.update(
-                                    (v) =>
-                                        v +
-                                        styled(
-                                            "color-red",
-                                            "Intrinsic command not found: " +
-                                                bin
-                                        ) +
-                                        "<br />"
+                                logError(
+                                    `Intrinsic command not found: \x1b[0m\x1b[1;36m${bin}`
                                 );
                             }
                         } catch (ex: unknown) {
-                            termContent.update(
-                                (v) =>
-                                    v +
-                                    styled(
-                                        "color-red",
-                                        "An error occured while executing: " +
-                                            cmd
-                                    ) +
-                                    htmlText(`\n${ex}\n`)
+                            logError(
+                                `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`
                             );
                         }
                     } else {
-                        termContent.update(
-                            (v) =>
-                                v +
-                                styled("color-red", "Permission denied.") +
-                                "<br />"
-                        );
+                        logError("Permission denied.");
                     }
 
                     found = true;
@@ -128,12 +109,9 @@ export const executeScript = (prompt: string, buf: string) => {
         }
 
         if (!found) {
-            termContent.update(
-                (v) =>
-                    v +
-                    styled("color-red", "Command not found: " + cmd) +
-                    "<br />"
-            );
+            logError(`Command not found: ${cmd}`);
         }
     }
+
+    get(terminal).write(prompt);
 };
