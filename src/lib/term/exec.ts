@@ -1,16 +1,14 @@
 import * as path from "@std/path";
-import { get, writable } from "svelte/store";
+import { get } from "svelte/store";
 import { termBuffer, termPrompt } from "../stores";
 import { splitToCommands } from "./parse";
 import { canExecute } from "./perms";
-import { cwd, gid, uid } from "./info";
+import { cwd, env, gid, uid } from "./env";
 import { terminal } from "./terminal";
 import { logError } from "./log";
 import { vfs } from "./vfs";
 import { evalScript, isScriptCommand } from "./swc";
 import type { VFSEntry } from "$$/system/vfs";
-
-export const pathVar = writable<string>("/usr/bin:/usr/local/bin");
 
 export const executeScript = async () => {
     const prompt = get(termPrompt);
@@ -26,7 +24,11 @@ export const executeScript = async () => {
     get(terminal).write(prompt);
 };
 
-export const runAs = async (targetUid: number, targetGid: number, text: string) => {
+export const runAs = async (
+    targetUid: number,
+    targetGid: number,
+    text: string
+) => {
     const curUid = get(uid);
     const curGid = get(gid);
 
@@ -87,9 +89,15 @@ export const runCommand = async (text: string) => {
     }
 
     const cmd = args.shift()!;
+    const envPath = get(env).get("PATH");
     let found = false;
 
-    outer: for (const dir of get(pathVar).split(":")) {
+    if (!envPath) {
+        logError("PATH variable not found!");
+        return;
+    }
+
+    outer: for (const dir of envPath.split(":")) {
         const fullPath = dir.startsWith("/")
             ? path.normalize(dir)
             : path.normalize(get(cwd) + "/" + dir);

@@ -11,6 +11,7 @@ declare module "$$/system/core" {
     declare const group: string;
     declare const machineInfo: string;
     declare const hostname: string;
+    declare const env: Map<string, string>;
 
     declare function chdir(to: string);
 }

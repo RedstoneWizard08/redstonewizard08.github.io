@@ -1,5 +1,5 @@
 import type { VFSEntry } from "$$/system/vfs";
-import { ROOT_GID, ROOT_UID } from "./info";
+import { ROOT_GID, ROOT_UID } from "./env";
 
 export interface TargetPermissions {
     read: boolean;

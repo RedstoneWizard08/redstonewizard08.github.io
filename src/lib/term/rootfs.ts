@@ -13,10 +13,12 @@ import date from "./cmd/date.ts?raw";
 import uname from "./cmd/uname.ts?raw";
 import hostname from "./cmd/hostname.ts?raw";
 import help from "./cmd/help.ts?raw";
+import rsh from "./cmd/rsh.ts?raw";
 
 export type DefaultFiles<K, V> = readonly [...[K, V][]];
 
 export const defaultDirs: [string, number][] = [
+    ["/bin", 0o755],
     ["/usr", 0o755],
     ["/usr/bin", 0o755],
     ["/usr/lib", 0o755],
@@ -33,7 +35,7 @@ export const defaultFiles: DefaultFiles<string, string> = [
     ["/usr/bin/echo", echo],
     ["/usr/bin/ls", ls],
     ["/usr/bin/cat", cat],
-    // ["/usr/bin/rsh", rsh],
+    ["/usr/bin/rsh", rsh],
     // ["/usr/bin/mkdir", mkdir],
     ["/usr/bin/rm", rm],
     ["/usr/bin/touch", touch],
@@ -57,5 +59,6 @@ export const defaultFiles: DefaultFiles<string, string> = [
 ];
 
 export const defaultSymlinks: [string, string][] = [
+    ["/usr/bin/rsh", "/bin/rsh"],
     ["/usr/bin/clear", "/usr/bin/cls"],
 ];

@@ -10,7 +10,7 @@ import {
     ROOT_UID,
     ROOT_GID,
     userMap,
-} from "./info";
+} from "./env";
 import type {
     IVirtFS,
     FileInfo,

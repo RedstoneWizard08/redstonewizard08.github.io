@@ -16,6 +16,10 @@ export const gid = writable<number>(-1);
 export const cwd = writable<string>("/");
 export const hostname = writable<string>("redstone");
 
+export const env = writable<Map<string, string>>(
+    new Map([["PATH", "/bin:/usr/bin:/usr/local/bin"]])
+);
+
 export const getMachineInfo = () =>
     MACHINE_INFO.replace("%host%", get(hostname)).replace(
         "%date%",
