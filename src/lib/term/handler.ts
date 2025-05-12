@@ -3,18 +3,34 @@ import { termBuffer, termPrompt } from "../stores";
 import { terminal } from "./terminal";
 import { executeScript } from "./exec";
 import type { ITerminal } from "@xterm/xterm/src/browser/Types";
+import { inApp } from "./env.ts";
+
+const ansiRegex = () => {
+    const ST = "(?:\\u0007|\\u001B\\u005C|\\u009C)";
+
+    const pattern = [
+        `[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?${ST})`,
+        "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))",
+    ].join("|");
+
+    return new RegExp(pattern, "g");
+};
 
 export const handleTerminalData = async (ev: string) => {
+    if (get(inApp)) return;
+
+    const prompt = termPrompt().replace(ansiRegex(), "");
+
     switch (ev) {
         case "\u0003":
             termBuffer.set("");
             get(terminal).write("^C");
-            get(terminal).write(`\r\n${get(termPrompt)}`);
+            get(terminal).write(`\r\n${termPrompt()}`);
             break;
         case "\u001A":
             termBuffer.set("");
             get(terminal).write("^Z");
-            get(terminal).write(`\r\n${get(termPrompt)}`);
+            get(terminal).write(`\r\n${termPrompt()}`);
             break;
         case "\u0009":
             termBuffer.update((v) => v + "\t");
@@ -40,7 +56,7 @@ export const handleTerminalData = async (ev: string) => {
         case "\u007F":
             if (
                 ((get(terminal) as any)._core as ITerminal).buffer.x >
-                get(termPrompt).length
+                prompt.length
             ) {
                 get(terminal).write("\b \b");
 

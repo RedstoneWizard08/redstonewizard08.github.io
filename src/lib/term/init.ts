@@ -5,6 +5,8 @@ import { termPrompt } from "../stores";
 import { generateFilesystem } from "./gen";
 import { println } from "./log";
 import { runCommand } from "./exec";
+import { setDefaultEnv } from "./env.ts";
+import { init, initializeLogger } from "@wasmer/sdk";
 
 export const logInitPre = (msg: string) => {
     println(`\x1b[0m       ${msg}`);
@@ -22,19 +24,35 @@ export const initTerminal = async () => {
     await initSwc();
 
     logInit("Started Speedy Web Compiler service.");
+    logInitPre("Initializing Wasmer service...");
+
+    await init();
+    initializeLogger("info");
+
+    logInit("Started Wasmer service.");
     logInitPre("Generating filesystem...");
 
     await generateFilesystem();
 
     logInit("Generated filesystem.");
-    // I don't know if I like this.
-    // logInitPre("Spawning process /usr/bin/help...");
-    // println();
-    // await runCommand("help");
-    // println();
-    // logInit("Spawned process /usr/bin/help.");
-    logInit("Booted WebOS.");
+    logInitPre("Setting environment...");
+
+    setDefaultEnv();
+
+    logInit("Environment set.");
+    logInitPre("Spawning process /usr/bin/help...");
+    
+    println();
+    
+    await runCommand("help");
+    
     println();
 
-    get(terminal).write(get(termPrompt));
+    logInit("Spawned process /usr/bin/help.");
+    logInit("Running final system processes...");
+    logInit("Booted WebOS.");
+    
+    println();
+
+    get(terminal).write(termPrompt());
 };

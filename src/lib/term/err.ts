@@ -3,3 +3,12 @@ export class CommandError extends Error {
         super(message, opts);
     }
 }
+
+export class ExitError extends Error {
+    public readonly code: number;
+
+    public constructor(code?: number) {
+        super(`Process Exited: ${code ?? 0}`);
+        this.code = code ?? 0;
+    }
+}

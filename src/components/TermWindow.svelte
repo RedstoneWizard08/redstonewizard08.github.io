@@ -31,6 +31,7 @@
             cursorInactiveStyle: "bar",
             disableStdin: false,
             fontWeight: "bold",
+            convertEol: true,
         });
 
         $terminal.open(win);

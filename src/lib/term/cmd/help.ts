@@ -19,3 +19,8 @@ println();
 println("Have fun!");
 println();
 println("===============================================================");
+println();
+println("Just want to explore without using the terminal?");
+println(`Go here: \x1b[96m${new URL("/gui", location.href)}\x1b[0m`);
+println();
+println("===============================================================");

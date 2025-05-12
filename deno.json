@@ -1,0 +1,26 @@
+{
+    "unstable": ["sloppy-imports"],
+    "compilerOptions": {
+        "lib": [
+            "deno.ns",
+            "dom",
+            "dom.iterable"
+        ],
+        "types": [
+            ".astro/types.d.ts",
+            "astro/client"
+        ]
+    },
+    "lint": {
+        "rules": {
+            "exclude": ["no-sloppy-imports", "no-explicit-any"]
+        }
+    },
+    "fmt": {
+        "indentWidth": 4
+    },
+    "exclude": ["xterm.js"],
+    "imports": {
+        "content.d.ts": "./.astro/content.d.ts"
+    }
+}

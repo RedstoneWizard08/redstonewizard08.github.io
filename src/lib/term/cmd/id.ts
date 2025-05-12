@@ -8,5 +8,5 @@ if (process.argv.includes("-u")) {
 } else if (process.argv.includes("-g")) {
     println(gid.toString());
 } else {
-    println("Usage: id [-u] [-g]");
+    println("Usage: id [-u|-g]");
 }

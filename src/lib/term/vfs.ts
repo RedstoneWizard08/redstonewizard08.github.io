@@ -331,7 +331,7 @@ export class VirtualFS implements IVirtFS {
                 permissions: it.permissions,
                 type: "file",
             };
-        } catch (e) {
+        } catch (_ex) {
             return { exists: false };
         }
     }

@@ -9,8 +9,7 @@
         "*.pcss": "postcss",
         "*.scss": "scss"
     },
-    "deno.enable": false,
+    "deno.enable": true,
     "svelte.enable-ts-plugin": false,
-    "svelte.ask-to-enable-ts-plugin": false,
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "svelte.ask-to-enable-ts-plugin": false
 }

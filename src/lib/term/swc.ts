@@ -1,30 +1,89 @@
 import initSwc, { transform } from "@swc/wasm-web";
 import ScopedEval from "./eval";
 import { vfs } from "./vfs";
-import { clearScreen, logError, logInfo, logWarn, println } from "./log";
-import { cwd, env, getMachineInfo, gid, groupMap, hostname, uid, userMap } from "./env";
-import { get } from "svelte/store";
+import * as fmtIn from "./log";
 import {
-    canExecute,
-    canRead,
-    canWrite,
-    printFilePermissions,
-    printPermissions,
-    printTargetPermissions,
-    readFilePermissions,
-    readPermissions,
-    writeFilePermissions,
-    writePermissions,
-} from "./perms";
+    cwd,
+    defaultEnv,
+    env,
+    getMachineInfo,
+    gid,
+    groupMap,
+    hostname,
+    inApp,
+    uid,
+    userMap,
+} from "./env";
+import { get } from "svelte/store";
+import * as permsIn from "./perms";
 import * as path from "@std/path";
+import * as dateFns from "date-fns";
+import { ExitError } from "./err";
+import * as cliHighlight from "../cli-highlight";
+import * as wasm from "./wasm";
+
+// Checks to entire type-safety
+const fmt = fmtIn satisfies typeof import("$$/system/fmt");
+const perms = permsIn satisfies typeof import("$$/system/permissions");
 
 export const setupSwc = initSwc;
 
 export const isScriptCommand = (file: Uint8Array) =>
     new TextDecoder().decode(file).startsWith("#!/proc/builtin swc");
 
+export const getSystemCore = (
+    argv: string[],
+): typeof import("$$/system/core") => ({
+    vfs,
+    process: { argv },
+    cwd: get(cwd),
+    uid: get(uid),
+    gid: get(gid),
+    user: userMap[get(uid)],
+    group: groupMap[get(gid)],
+    machineInfo: getMachineInfo(),
+    hostname: get(hostname),
+    env: get(env),
+    defaultEnv,
+    chdir: cwd.set,
+    exit,
+});
+
+export const exit = (code?: number) => {
+    throw new ExitError(code);
+};
+
+export const slugify = (name: string) => name.replace(/[^A-Za-z0-9_]/gm, "_");
+
+export const constModule = <T extends object>(name: string, module: T) =>
+    Object.fromEntries(
+        Object.keys(module).map((key) => [
+            key,
+            `__cmd_injected_${slugify(name)}_${key}`,
+        ]),
+    );
+
+export const constModuleData = <T extends object>(name: string, module: T) =>
+    Object.keys(module).map((key) => [
+        `__cmd_injected_${slugify(name)}_${key}`,
+        module[key as keyof T],
+    ]);
+
+export const getModules = (argv: string[]) => ({
+    "$$/system/core": getSystemCore(argv),
+    "$$/system/fmt": fmt,
+    "$$/system/permissions": perms,
+    "$$/system/wasm": wasm,
+    "@std/path": path,
+    path,
+    "date-fns": dateFns,
+    "cli-highlight": cliHighlight,
+});
+
 export const evalScript = async (code: string, argv: string[]) => {
     code = code.replace("#!/proc/builtin swc", "");
+
+    const modules = getModules(argv);
 
     const out = await transform(code, {
         sourceMaps: true,
@@ -41,56 +100,11 @@ export const evalScript = async (code: string, argv: string[]) => {
             },
             transform: {
                 constModules: {
-                    globals: {
-                        "$$/system/core": {
-                            vfs: "__cmd_injected_vfs",
-                            process: "__cmd_injected_process",
-                            cwd: "__cmd_injected_cwd",
-                            chdir: "__cmd_injected_chdir",
-                            uid: "__cmd_injected_uid",
-                            gid: "__cmd_injected_gid",
-                            user: "__cmd_injected_user",
-                            group: "__cmd_injected_group",
-                            machineInfo: "__cmd_injected_machineInfo",
-                            hostname: "__cmd_injected_hostname",
-                            env: "__cmd_injected_env",
-                        },
-                        "$$/system/fmt": {
-                            clearScreen: "__cmd_injected_clearScreen",
-                            println: "__cmd_injected_println",
-                            logInfo: "__cmd_injected_logInfo",
-                            logWarn: "__cmd_injected_logWarn",
-                            logError: "__cmd_injected_logError",
-                        },
-                        "$$/system/permissions": {
-                            readPermissions: "__cmd_injected_readPermissions",
-                            readFilePermissions:
-                                "__cmd_injected_readFilePermissions",
-                            writePermissions: "__cmd_injected_writePermissions",
-                            writeFilePermissions:
-                                "__cmd_injected_writeFilePermissions",
-                            canRead: "__cmd_injected_canRead",
-                            canWrite: "__cmd_injected_canWrite",
-                            canExecute: "__cmd_injected_canExecute",
-                            printTargetPermissions:
-                                "__cmd_injected_printTargetPermissions",
-                            printFilePermissions:
-                                "__cmd_injected_printFilePermissions",
-                            printPermissions: "__cmd_injected_printPermissions",
-                        },
-                        "@std/path": Object.fromEntries(
-                            Object.keys(path).map((key) => [
-                                key,
-                                `__cmd_injected_std_path_${key}`,
-                            ])
-                        ),
-                        path: Object.fromEntries(
-                            Object.keys(path).map((key) => [
-                                key,
-                                `__cmd_injected_std_path_${key}`,
-                            ])
-                        ),
-                    },
+                    globals: Object.fromEntries(
+                        Object.entries(modules).map((
+                            [k, v],
+                        ) => [k, constModule(k, v)]),
+                    ),
                 },
             },
         },
@@ -106,47 +120,40 @@ export const evalScript = async (code: string, argv: string[]) => {
 
     const scope = new ScopedEval();
 
-    await scope.eval(
-        out.code,
-        Object.assign(
-            {
-                TextDecoder,
-                TextEncoder,
-                __cmd_injected_vfs: vfs,
-                __cmd_injected_cwd: get(cwd),
-                __cmd_injected_uid: get(uid),
-                __cmd_injected_gid: get(gid),
-                __cmd_injected_user: userMap[get(uid)],
-                __cmd_injected_group: groupMap[get(gid)],
-                __cmd_injected_machineInfo: getMachineInfo(),
-                __cmd_injected_hostname: get(hostname),
-                __cmd_injected_env: get(env),
-                __cmd_injected_chdir: cwd.set,
-                __cmd_injected_clearScreen: clearScreen,
-                __cmd_injected_println: println,
-                __cmd_injected_logInfo: logInfo,
-                __cmd_injected_logWarn: logWarn,
-                __cmd_injected_logError: logError,
-                __cmd_injected_readPermissions: readPermissions,
-                __cmd_injected_readFilePermissions: readFilePermissions,
-                __cmd_injected_writePermissions: writePermissions,
-                __cmd_injected_writeFilePermissions: writeFilePermissions,
-                __cmd_injected_canRead: canRead,
-                __cmd_injected_canWrite: canWrite,
-                __cmd_injected_canExecute: canExecute,
-                __cmd_injected_printTargetPermissions: printTargetPermissions,
-                __cmd_injected_printFilePermissions: printFilePermissions,
-                __cmd_injected_printPermissions: printPermissions,
-                __cmd_injected_process: {
-                    argv,
+    inApp.set(true);
+
+    try {
+        await scope.eval(
+            out.code,
+            Object.assign(
+                {
+                    window,
+                    location,
+                    URL,
+                    globalThis,
+                    TextDecoder,
+                    TextEncoder,
                 },
-            },
-            Object.fromEntries(
-                Object.keys(path).map((key) => [
-                    `__cmd_injected_std_path_${key}`,
-                    path[key as keyof typeof path],
-                ])
-            )
-        )
-    );
+                Object.fromEntries(
+                    Object.entries(modules).flatMap(([k, v]) =>
+                        constModuleData(k, v)
+                    ),
+                ),
+            ),
+        );
+
+        get(env).set("?", "0");
+    } catch (err: unknown) {
+        if (err instanceof ExitError) {
+            get(env).set("?", err.code.toString());
+        } else {
+            throw err;
+        }
+    }
+
+    const exitCode = parseInt(get(env).get("?")!);
+
+    get(env).set("EXIT_COLOR", exitCode == 0 ? "\x1b[32m" : "\x1b[31m");
+
+    inApp.set(false);
 };

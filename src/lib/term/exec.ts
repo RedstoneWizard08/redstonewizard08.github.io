@@ -3,7 +3,7 @@ import { get } from "svelte/store";
 import { termBuffer, termPrompt } from "../stores";
 import { splitToCommands } from "./parse";
 import { canExecute } from "./perms";
-import { cwd, env, gid, uid } from "./env";
+import { cwd, env, fillEnv, gid, uid } from "./env";
 import { terminal } from "./terminal";
 import { logError } from "./log";
 import { vfs } from "./vfs";
@@ -11,7 +11,6 @@ import { evalScript, isScriptCommand } from "./swc";
 import type { VFSEntry } from "$$/system/vfs";
 
 export const executeScript = async () => {
-    const prompt = get(termPrompt);
     const buf = get(termBuffer);
     const commands = splitToCommands(buf);
 
@@ -21,13 +20,13 @@ export const executeScript = async () => {
         await runCommand(text);
     }
 
-    get(terminal).write(prompt);
+    get(terminal).write(termPrompt());
 };
 
 export const runAs = async (
     targetUid: number,
     targetGid: number,
-    text: string
+    text: string,
 ) => {
     const curUid = get(uid);
     const curGid = get(gid);
@@ -40,6 +39,16 @@ export const runAs = async (
     uid.set(curUid);
     gid.set(curGid);
 };
+
+export const fixup = (input: string) =>
+    fillEnv(
+        input
+            .replaceAll("\\x1b", "\x1b")
+            .replaceAll("\\n", "\n")
+            .replaceAll("\\r", "\r")
+            .replaceAll("\\t", "\t")
+            .replaceAll("\\e", "\e"),
+    );
 
 export const runCommand = async (text: string) => {
     const args: string[] = [];
@@ -71,7 +80,7 @@ export const runCommand = async (text: string) => {
         } else if (char == "'") {
             inString = "single";
         } else if (/\s/.test(char)) {
-            args.push(buf.trim());
+            args.push(fixup(buf));
             buf = "";
             continue;
         } else {
@@ -80,7 +89,7 @@ export const runCommand = async (text: string) => {
     }
 
     if (buf.trim() != "") {
-        args.push(buf.trim());
+        args.push(fixup(buf));
     }
 
     if (args.length <= 0) {
@@ -97,6 +106,41 @@ export const runCommand = async (text: string) => {
         return;
     }
 
+    const fullPath = cmd.startsWith("/")
+        ? path.normalize(cmd)
+        : path.normalize(get(cwd) + "/" + cmd);
+
+    if (vfs.exists(fullPath)) {
+        const item = vfs.read(fullPath)!;
+        const info = vfs.stat(fullPath) as VFSEntry;
+
+        if (canExecute(get(uid), get(gid), info)) {
+            const content = item.contents;
+
+            try {
+                if (isScriptCommand(content)) {
+                    const argv = [cmd, ...args];
+
+                    await evalScript(new TextDecoder().decode(content), argv);
+
+                    return;
+                } else {
+                    logError(
+                        `Could not figure out how to run file at ${fullPath}!`,
+                    );
+                }
+            } catch (ex: unknown) {
+                logError(
+                    `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`,
+                );
+            }
+        } else {
+            logError("Permission denied.");
+        }
+
+        return;
+    }
+
     outer: for (const dir of envPath.split(":")) {
         const fullPath = dir.startsWith("/")
             ? path.normalize(dir)
@@ -106,7 +150,7 @@ export const runCommand = async (text: string) => {
 
         try {
             contents = vfs.readdir(fullPath);
-        } catch (ex: any) {
+        } catch (_ex: any) {
             continue;
         }
 
@@ -117,7 +161,7 @@ export const runCommand = async (text: string) => {
             ) {
                 if (canExecute(get(uid), get(gid), item)) {
                     const content = vfs.read(
-                        `${fullPath}/${item.name}`
+                        `${fullPath}/${item.name}`,
                     )!.contents;
 
                     try {
@@ -126,19 +170,19 @@ export const runCommand = async (text: string) => {
 
                             await evalScript(
                                 new TextDecoder().decode(content),
-                                argv
+                                argv,
                             );
 
                             found = true;
                             break outer;
                         } else {
                             logError(
-                                `Could not figure out how to run file at ${fullPath}/${item.name}!`
+                                `Could not figure out how to run file at ${fullPath}/${item.name}!`,
                             );
                         }
                     } catch (ex: unknown) {
                         logError(
-                            `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`
+                            `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`,
                         );
                     }
                 } else {

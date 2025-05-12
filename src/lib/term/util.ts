@@ -37,3 +37,6 @@ export interface FixedLengthArray<T extends any, L extends number>
 
 export const styled = (classes: ClassValue, text: string) =>
     `<span class="${classes}">${text}</span>`;
+
+export const delay = (time: number) =>
+    new Promise((res, _rej) => setTimeout(res, time));

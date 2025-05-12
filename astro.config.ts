@@ -30,6 +30,11 @@ export default defineConfig({
         plugins: [wasm()],
 
         server: {
+            headers: {
+                "Cross-Origin-Opener-Policy": "same-origin",
+                "Cross-Origin-Embedder-Policy": "require-corp",
+            },
+
             hmr: {
                 port: 4000,
                 clientPort: 443,
@@ -51,12 +56,18 @@ export default defineConfig({
         optimizeDeps: {
             exclude: [
                 "@swc/wasm-web",
+                "@wasmer/sdk",
             ],
         },
     },
 
     server: {
         port: 4000,
+
+        headers: {
+            "Cross-Origin-Opener-Policy": "same-origin",
+            "Cross-Origin-Embedder-Policy": "require-corp",
+        },
     },
 
     site: "https://redstonewizard08.github.io",

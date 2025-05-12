@@ -3,14 +3,17 @@
 import { cwd, process, vfs } from "$$/system/core";
 import { logError, println } from "$$/system/fmt";
 import * as path from "@std/path";
+import { highlight } from "cli-highlight";
 
-const main = async () => {
+const main = () => {
     process.argv.shift(); // remove the program name
 
-    let all: [string, string][] = [];
+    const all: [string, string][] = [];
 
     for (const item of process.argv) {
-        const fullPath = path.normalize(cwd + "/" + item);
+        const fullPath = item.startsWith("/")
+            ? path.normalize(item)
+            : path.normalize(cwd + "/" + item);
 
         if (!vfs.exists(fullPath)) {
             logError(`File at ${fullPath} does not exist!`);
@@ -32,7 +35,7 @@ const main = async () => {
 
     for (const [name, data] of all) {
         println(`\x1b[92m${name}:\x1b[0m`);
-        println(data);
+        println(highlight(data).replaceAll("\n", "\r\n"));
         println();
     }
 };

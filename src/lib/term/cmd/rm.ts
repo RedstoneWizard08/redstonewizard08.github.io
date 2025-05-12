@@ -6,7 +6,7 @@ import { logError } from "$$/system/fmt";
 
 process.argv.shift(); // remove the command
 
-const main = async () => {
+const main = () => {
     for (const item of process.argv) {
         if (item.startsWith("-")) continue;
 

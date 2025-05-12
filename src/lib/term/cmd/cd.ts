@@ -1,10 +1,15 @@
 #!/proc/builtin swc
 
 import * as path from "@std/path";
-import { chdir, cwd, process, vfs } from "$$/system/core";
+import { chdir, cwd, env, exit, process, vfs } from "$$/system/core";
 import { logError } from "$$/system/fmt";
 
 process.argv.shift(); // remove the command
+
+if (process.argv.length <= 0) {
+    chdir(env.get("HOME")!);
+    exit(0);
+}
 
 const to = process.argv.length >= 1 ? process.argv[0] : "/";
 const fullTo = to.startsWith("/") ? to : path.normalize(`${cwd}/${to}`);

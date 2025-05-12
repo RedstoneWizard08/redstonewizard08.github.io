@@ -1,19 +1,28 @@
-import ls from "./cmd/ls.ts?raw";
-import cat from "./cmd/cat.ts?raw";
-import cd from "./cmd/cd.ts?raw";
-import pwd from "./cmd/pwd.ts?raw";
-import rm from "./cmd/rm.ts?raw";
-import touch from "./cmd/touch.ts?raw";
-import clear from "./cmd/clear.ts?raw";
-import reset from "./cmd/reset.ts?raw";
-import id from "./cmd/id.ts?raw";
-import whoami from "./cmd/whoami.ts?raw";
-import echo from "./cmd/echo.ts?raw";
-import date from "./cmd/date.ts?raw";
-import uname from "./cmd/uname.ts?raw";
-import hostname from "./cmd/hostname.ts?raw";
-import help from "./cmd/help.ts?raw";
-import rsh from "./cmd/rsh.ts?raw";
+import { modules } from "./files.ts";
+
+const {
+    ls,
+    cat,
+    echo,
+    rsh,
+    rm,
+    touch,
+    cd,
+    help,
+    whoami,
+    hostname,
+    uname,
+    date,
+    pwd,
+    clear,
+    id,
+    reset,
+    sysinfo,
+    exportCmd,
+    exit,
+    unset,
+    wasmer,
+} = modules;
 
 export type DefaultFiles<K, V> = readonly [...[K, V][]];
 
@@ -56,6 +65,11 @@ export const defaultFiles: DefaultFiles<string, string> = [
     ["/usr/bin/reset", reset],
     // ["/usr/bin/chmod", chmod],
     // ["/usr/bin/chmod", chown],
+    ["/usr/bin/sysinfo", sysinfo],
+    ["/usr/bin/export", exportCmd],
+    ["/usr/bin/exit", exit],
+    ["/usr/bin/unset", unset],
+    ["/usr/bin/wasmer", wasmer],
 ];
 
 export const defaultSymlinks: [string, string][] = [

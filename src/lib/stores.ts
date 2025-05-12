@@ -1,4 +1,5 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
+import { env, fillEnv } from "./term/env";
 
 /**
  * The terminal buffer.
@@ -11,6 +12,6 @@ export const termBuffer = writable<string>("");
  */
 export const termCursorPosition = writable<number>(0);
 export const termContent = writable<string>("");
-export const termPrompt = writable<string>("$ ");
+export const termPrompt = () => fillEnv(get(env).get("PS1")!);
 export const termClipboardPermission = writable<boolean>(false);
 export const termHistory = writable<string[]>([]);
