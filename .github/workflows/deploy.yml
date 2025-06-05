@@ -18,7 +18,6 @@ jobs:
                   bun-version: latest
             - run: bun install
             - run: |
-                  bash build-xterm.sh
                   bun install
                   bun run build
             - name: Upload artifact

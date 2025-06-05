@@ -20,7 +20,6 @@ import * as path from "@std/path";
 import * as dateFns from "date-fns";
 import { ExitError } from "./err";
 import * as cliHighlight from "../cli-highlight";
-import * as wasm from "./wasm";
 
 // Checks to entire type-safety
 const fmt = fmtIn satisfies typeof import("$$/system/fmt");
@@ -73,7 +72,6 @@ export const getModules = (argv: string[]) => ({
     "$$/system/core": getSystemCore(argv),
     "$$/system/fmt": fmt,
     "$$/system/permissions": perms,
-    "$$/system/wasm": wasm,
     "@std/path": path,
     path,
     "date-fns": dateFns,

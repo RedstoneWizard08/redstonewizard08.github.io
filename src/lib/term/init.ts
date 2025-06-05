@@ -6,7 +6,6 @@ import { generateFilesystem } from "./gen";
 import { println } from "./log";
 import { runCommand } from "./exec";
 import { setDefaultEnv } from "./env.ts";
-import { init, initializeLogger } from "@wasmer/sdk";
 
 export const logInitPre = (msg: string) => {
     println(`\x1b[0m       ${msg}`);
@@ -24,12 +23,6 @@ export const initTerminal = async () => {
     await initSwc();
 
     logInit("Started Speedy Web Compiler service.");
-    logInitPre("Initializing Wasmer service...");
-
-    await init();
-    initializeLogger("info");
-
-    logInit("Started Wasmer service.");
     logInitPre("Generating filesystem...");
 
     await generateFilesystem();

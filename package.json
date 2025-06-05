@@ -20,12 +20,11 @@
         "@std/path": "npm:@jsr/std__path",
         "@swc/wasm": "^1.11.9",
         "@swc/wasm-web": "^1.11.9",
-        "@wasmer/sdk": "^0.9.0",
-        "@xterm/addon-fit": "workspace:*",
-        "@xterm/addon-search": "workspace:*",
-        "@xterm/addon-web-links": "workspace:*",
-        "@xterm/addon-webgl": "workspace:*",
-        "@xterm/xterm": "workspace:*",
+        "@xterm/addon-fit": "^0.10.0",
+        "@xterm/addon-search": "^0.15.0",
+        "@xterm/addon-web-links": "^0.11.0",
+        "@xterm/addon-webgl": "^0.18.0",
+        "@xterm/xterm": "^5.5.0",
         "astro": "^5.4.2",
         "astro-compress": "^2.3.6",
         "astro-icon": "^1.1.5",
@@ -56,11 +55,5 @@
         "sass-migrator": "^2.3.1",
         "unocss": "^66.1.0-beta.3",
         "vite-plugin-wasm": "^3.4.1"
-    },
-    "workspaces": {
-        "packages": [
-            "./xterm.js",
-            "./xterm.js/addons/*"
-        ]
     }
 }

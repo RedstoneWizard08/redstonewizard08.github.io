@@ -26,7 +26,7 @@ export const executeScript = async () => {
 export const runAs = async (
     targetUid: number,
     targetGid: number,
-    text: string,
+    text: string
 ) => {
     const curUid = get(uid);
     const curGid = get(gid);
@@ -47,27 +47,32 @@ export const fixup = (input: string) =>
             .replaceAll("\\n", "\n")
             .replaceAll("\\r", "\r")
             .replaceAll("\\t", "\t")
-            .replaceAll("\\e", "\e"),
+            .replaceAll("\\e", "\e")
     );
 
 export const runCommand = async (text: string) => {
     const args: string[] = [];
 
     let buf = "";
+    let cbuf = "";
     let inString: false | "single" | "double" = false;
 
     for (const char of text) {
         if (inString == "double") {
             if (char == '"') {
                 inString = false;
+                buf += fillEnv(fixup(cbuf));
+                cbuf = "";
                 continue;
             }
 
-            buf += char;
+            cbuf += char;
             continue;
         } else if (inString == "single") {
             if (char == "'") {
                 inString = false;
+                buf += fixup(cbuf);
+                cbuf = "";
                 continue;
             }
 
@@ -77,19 +82,29 @@ export const runCommand = async (text: string) => {
 
         if (char == '"') {
             inString = "double";
+            buf += fillEnv(fixup(cbuf));
+            cbuf = "";
         } else if (char == "'") {
             inString = "single";
+            buf += fillEnv(fixup(cbuf));
+            cbuf = "";
         } else if (/\s/.test(char)) {
-            args.push(fixup(buf));
+            buf += fillEnv(fixup(cbuf));
+            args.push(buf);
             buf = "";
+            cbuf = "";
             continue;
         } else {
-            buf += char;
+            cbuf += char;
         }
     }
 
+    if (cbuf.trim() != "") {
+        buf += fillEnv(fixup(cbuf));
+    }
+
     if (buf.trim() != "") {
-        args.push(fixup(buf));
+        args.push(buf);
     }
 
     if (args.length <= 0) {
@@ -126,12 +141,12 @@ export const runCommand = async (text: string) => {
                     return;
                 } else {
                     logError(
-                        `Could not figure out how to run file at ${fullPath}!`,
+                        `Could not figure out how to run file at ${fullPath}!`
                     );
                 }
             } catch (ex: unknown) {
                 logError(
-                    `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`,
+                    `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`
                 );
             }
         } else {
@@ -161,7 +176,7 @@ export const runCommand = async (text: string) => {
             ) {
                 if (canExecute(get(uid), get(gid), item)) {
                     const content = vfs.read(
-                        `${fullPath}/${item.name}`,
+                        `${fullPath}/${item.name}`
                     )!.contents;
 
                     try {
@@ -170,19 +185,19 @@ export const runCommand = async (text: string) => {
 
                             await evalScript(
                                 new TextDecoder().decode(content),
-                                argv,
+                                argv
                             );
 
                             found = true;
                             break outer;
                         } else {
                             logError(
-                                `Could not figure out how to run file at ${fullPath}/${item.name}!`,
+                                `Could not figure out how to run file at ${fullPath}/${item.name}!`
                             );
                         }
                     } catch (ex: unknown) {
                         logError(
-                            `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`,
+                            `An error occured during execution: \x1b[0m\r\n\x1b[1;36m${ex}`
                         );
                     }
                 } else {

@@ -13,7 +13,7 @@
     },
     "lint": {
         "rules": {
-            "exclude": ["no-sloppy-imports", "no-explicit-any"]
+            "exclude": ["no-sloppy-imports", "no-explicit-any", "no-window"]
         }
     },
     "fmt": {

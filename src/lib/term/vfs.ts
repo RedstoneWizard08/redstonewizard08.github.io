@@ -24,12 +24,19 @@ import { canRead, canWrite } from "./perms";
 
 export const DEFAULT_PERMISSIONS = 0o664;
 
+declare global {
+    interface Window {
+        _vfs: VirtualFS;
+    }
+}
+
 // TODO: Relative symlinks
 export class VirtualFS implements IVirtFS {
     public readonly tree: FileTree = new Map();
 
     public constructor() {
         this.bootstrap();
+        window._vfs = this;
     }
 
     private resolvePath(input: string) {

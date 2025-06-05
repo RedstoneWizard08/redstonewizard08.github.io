@@ -20,7 +20,6 @@ import sysinfo from "./cmd/sysinfo.ts?raw";
 import exportCmd from "./cmd/export.ts?raw";
 import exit from "./cmd/exit.ts?raw";
 import unset from "./cmd/unset.ts?raw";
-import wasmer from "./cmd/wasmer.ts?raw";
 
 const modules = {
     ls,
@@ -43,7 +42,6 @@ const modules = {
     exportCmd,
     exit,
     unset,
-    wasmer,
 };
 
 const modulesTyped = modules as Record<keyof typeof modules, string>;

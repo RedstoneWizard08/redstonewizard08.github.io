@@ -21,7 +21,6 @@ const {
     exportCmd,
     exit,
     unset,
-    wasmer,
 } = modules;
 
 export type DefaultFiles<K, V> = readonly [...[K, V][]];
@@ -69,7 +68,6 @@ export const defaultFiles: DefaultFiles<string, string> = [
     ["/usr/bin/export", exportCmd],
     ["/usr/bin/exit", exit],
     ["/usr/bin/unset", unset],
-    ["/usr/bin/wasmer", wasmer],
 ];
 
 export const defaultSymlinks: [string, string][] = [

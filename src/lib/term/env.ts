@@ -37,6 +37,19 @@ export class EnvMap extends Map<string, string> {
         return super.delete(key);
     }
 
+    override has(key: string): boolean {
+        switch (key) {
+            case "PWD":
+            case "USER":
+            case "LOGNAME":
+            case "GROUP":
+            case "HOME":
+                return true;
+            default:
+                return super.has(key);
+        }
+    }
+
     override get(key: string): string | undefined {
         switch (key) {
             case "PWD":
@@ -55,7 +68,7 @@ export class EnvMap extends Map<string, string> {
 }
 
 export const env = writable<Map<string, string>>(
-    new EnvMap(Object.entries(defaultEnv)),
+    new EnvMap(Object.entries(defaultEnv))
 );
 
 export const getMachineInfo = () =>
@@ -64,7 +77,7 @@ export const getMachineInfo = () =>
         new Intl.DateTimeFormat("en-US", {
             dateStyle: "full",
             timeStyle: "long",
-        }).format(Date.now()),
+        }).format(Date.now())
     );
 
 export const userMap: Record<number, string> = Object.fromEntries([
@@ -83,8 +96,14 @@ export const setDefaultEnv = () => {
 };
 
 export const fillEnv = (input: string) =>
-    input.replace(
-        /([^\\])\$([A-Za-z_]+)/gm,
-        (_str, pre, g1) =>
-            pre + (get(env).has(g1) ? get(env).get(g1)! : ("$" + g1)),
-    ).replaceAll("$?", get(env).get("?") ?? "$?").replaceAll("\\$", "$");
+    input
+        .replace(
+            /([^\\]?)\$([A-Za-z0-9_]+)/gm,
+            (_str, pre, g1) =>
+                pre +
+                (get(env).has(g1)
+                    ? get(env).get(g1)!.replaceAll("\x1b", "\\x1b")
+                    : "$" + g1)
+        )
+        .replaceAll("$?", get(env).get("?") ?? "$?")
+        .replaceAll("\\$", "$");
