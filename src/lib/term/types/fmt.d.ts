@@ -1,7 +1,7 @@
 declare module "$$/system/fmt" {
-    declare function clearScreen();
-    declare function println(text?: string);
-    declare function logInfo(text?: string);
-    declare function logWarn(text?: string);
-    declare function logError(text?: string);
+    function clearScreen(): void;
+    function println(text?: string): void;
+    function logInfo(text?: string): void;
+    function logWarn(text?: string): void;
+    function logError(text?: string): void;
 }

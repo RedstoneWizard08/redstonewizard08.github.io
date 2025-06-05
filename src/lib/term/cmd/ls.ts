@@ -10,10 +10,12 @@ process.argv.shift(); // remove the first arg (the command itself)
 
 const flags = Object.fromEntries(
     new Set(
-        process.argv.filter((v) => v.startsWith("-")).flatMap((v) =>
-            v.replace("-", "").split("")
-        ),
-    ).values().map((v) => [v, true]),
+        process.argv
+            .filter((v) => v.startsWith("-"))
+            .flatMap((v) => v.replace("-", "").split(""))
+    )
+        .values()
+        .map((v) => [v, true])
 );
 
 const extraInfo = flags.l;
@@ -34,7 +36,11 @@ for (const item of args) {
 
     const info = vfs.stat(fullPath);
 
-    if (info.exists && info.type != "folder") {
+    if (
+        info.exists &&
+        info.type != "folder" &&
+        !(info.type == "symlink" && info.kind == "folder")
+    ) {
         logError(`Entry at ${fullPath} is not a directory!`);
         continue;
     }
@@ -42,7 +48,7 @@ for (const item of args) {
     const dirInfo = info as VFSEntry;
 
     const entries: VFSEntry[] = [
-        ...vfs.readdir(fullPath) ?? [],
+        ...(vfs.readdir(fullPath) ?? []),
         {
             name: ".",
             group: dirInfo.group,
@@ -82,28 +88,27 @@ for (let i = 0; i < all.length; i++) {
     for (const file of data) {
         if (file.name.startsWith(".") && !showAll) continue;
 
-        const designator = file.type == "file"
-            ? "-"
-            : file.type == "folder"
-            ? "d"
-            : file.type == "symlink" || file.type == "symlink-broken"
-            ? "l"
-            : "!";
+        const designator =
+            file.type == "file"
+                ? "-"
+                : file.type == "folder"
+                  ? "d"
+                  : file.type == "symlink" || file.type == "symlink-broken"
+                    ? "l"
+                    : "!";
 
-        const prefixText = `${designator}${
-            printPermissions(file.permissions)
-        } ${
+        const prefixText = `${designator}${printPermissions(
+            file.permissions
+        )} ${
             (ownerHasNegative && file.owner > 0 ? " " : "") +
-            file.owner.toString().padEnd(
-                maxOwner - (ownerHasNegative ? 1 : 0),
-                " ",
-            )
+            file.owner
+                .toString()
+                .padEnd(maxOwner - (ownerHasNegative ? 1 : 0), " ")
         } ${
             (groupHasNegative && file.group > 0 ? " " : "") +
-            file.group.toString().padEnd(
-                maxGroup - (groupHasNegative ? 1 : 0),
-                " ",
-            )
+            file.group
+                .toString()
+                .padEnd(maxGroup - (groupHasNegative ? 1 : 0), " ")
         }`;
 
         const prefix = extraInfo ? `${prefixText} ` : "";

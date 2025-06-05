@@ -49,6 +49,11 @@ declare module "$$/system/vfs" {
          * The GID of the owner.
          */
         group: number;
+
+        /**
+         * The type of symlink this is, if it is one.
+         */
+        kind?: "file" | "folder";
     }
 
     export interface IVirtFS {
@@ -83,6 +88,7 @@ declare module "$$/system/vfs" {
         stat: (filePath: string) => VFSFileStats;
         exists: (filePath: string) => boolean;
         mkdirs: (dirPath: string, permissions?: number) => void;
+        mkdir: (dirPath: string, permissions?: number) => void;
         readdir: (path: string) => VFSEntry[];
         reset: () => void;
     }

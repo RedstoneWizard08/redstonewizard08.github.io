@@ -145,6 +145,7 @@ export const evalScript = async (code: string, argv: string[]) => {
         if (err instanceof ExitError) {
             get(env).set("?", err.code.toString());
         } else {
+            inApp.set(false);
             throw err;
         }
     }

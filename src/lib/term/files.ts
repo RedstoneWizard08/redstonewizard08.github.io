@@ -20,6 +20,8 @@ import sysinfo from "./cmd/sysinfo.ts?raw";
 import exportCmd from "./cmd/export.ts?raw";
 import exit from "./cmd/exit.ts?raw";
 import unset from "./cmd/unset.ts?raw";
+import which from "./cmd/which.ts?raw";
+import mkdir from "./cmd/mkdir.ts?raw";
 
 const modules = {
     ls,
@@ -42,6 +44,8 @@ const modules = {
     exportCmd,
     exit,
     unset,
+    which,
+    mkdir,
 };
 
 const modulesTyped = modules as Record<keyof typeof modules, string>;

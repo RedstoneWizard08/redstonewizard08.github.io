@@ -74,7 +74,9 @@ export class VirtualFS implements IVirtFS {
         isFile: boolean = true,
         permissions: number = DEFAULT_PERMISSIONS,
         fileUid?: number,
-        fileGid?: number
+        fileGid?: number,
+        propogateCreate: boolean = true,
+        ignoreFinalRead: boolean = false
     ) {
         if (this.isRoot(input)) {
             return this.tree;
@@ -90,7 +92,10 @@ export class VirtualFS implements IVirtFS {
             if (!parentRef.has(part)) {
                 // If we are creating, create the directory, otherwise throw
 
-                if (create) {
+                if (
+                    create &&
+                    !(!propogateCreate && part != parts[parts.length - 1])
+                ) {
                     if (vfsEntry && !canWrite(get(uid), get(gid), vfsEntry)) {
                         throw new ReferenceError(
                             "ENOTPERM: Permission denied."
@@ -120,7 +125,8 @@ export class VirtualFS implements IVirtFS {
                     group: entry.group,
                     name: "",
                     type: "file", // this doesn't matter
-                })
+                }) &&
+                !(ignoreFinalRead && part == parts[parts.length - 1])
             ) {
                 throw new ReferenceError("ENOTPERM: Permission denied.");
             }
@@ -136,7 +142,15 @@ export class VirtualFS implements IVirtFS {
                         );
                     } else {
                         // Otherwise set its target as the parentRef
-                        parentRef = this.getParentTree(entry.target, create);
+                        parentRef = this.getParentTree(
+                            entry.target,
+                            create && propogateCreate,
+                            false,
+                            permissions,
+                            fileUid,
+                            fileGid,
+                            propogateCreate
+                        );
                     }
                 } else {
                     // Otherwise throw
@@ -325,6 +339,7 @@ export class VirtualFS implements IVirtFS {
                             ? "symlink-broken"
                             : "symlink"
                         : "symlink-broken",
+                    kind: it.kind,
                 });
             }
 
@@ -353,7 +368,34 @@ export class VirtualFS implements IVirtFS {
         uid?: number,
         gid?: number
     ) {
-        this.getParentTree(dirPath, true, false, permissions, uid, gid);
+        this.getParentTree(
+            dirPath,
+            true,
+            false,
+            permissions,
+            uid,
+            gid,
+            true,
+            true
+        );
+    }
+
+    public mkdir(
+        dirPath: string,
+        permissions: number = DEFAULT_PERMISSIONS,
+        uid?: number,
+        gid?: number
+    ) {
+        this.getParentTree(
+            dirPath,
+            true,
+            false,
+            permissions,
+            uid,
+            gid,
+            false,
+            true
+        );
     }
 
     public readdir(path: string) {

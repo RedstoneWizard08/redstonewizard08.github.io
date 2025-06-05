@@ -3,15 +3,30 @@ import TermWindow from "./TermWindow.svelte";
 ---
 
 <div class="flex h-full w-full flex-col p-4">
-    <div class="text-lg font-bold mb-2">
+    <div class="mb-2 text-lg font-bold">
         <a href="/" class="border-b-0 hover:border-b-2">
-            <span class="text-green-300 text-lg">&gt;</span>
+            <span class="text-lg text-green-300">&gt;</span>
             Redstone's Website
-            <span class="text-green-300 text-lg animate-blink">_</span>
+            <span class="text-lg text-blue-300" id="loading">[Loading...]</span>
+            <span class="animate-blink text-lg text-green-300">_</span>
         </a>
     </div>
 
     <TermWindow client:only />
+
+    <script>
+        const loader = document.getElementById("loading");
+
+        declare global {
+            interface Window {
+                onLoadFinish?: () => void;
+            }
+        }
+
+        window.onLoadFinish = () => {
+            if (loader) loader.style.display = "none";
+        };
+    </script>
 </div>
 
 <style>
