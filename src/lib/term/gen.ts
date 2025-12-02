@@ -19,7 +19,6 @@ export const generateFilesystem = async () => {
         "RedstoneWizard08/NeoInstall",
         "RedstoneWizard08/Wormhole",
         "RedstoneWizard08/ModHost",
-        "RedstoneWizard08/DPScript",
         "RedstoneWizard08/QuickScript",
         "RedstoneWizard08/mayhem",
         "RedstoneWizard08/ConfigurableWarning",
@@ -32,22 +31,38 @@ export const generateFilesystem = async () => {
 
     logInitPre(`Fetching information for ${repos.length} repositories...`);
 
-    // for (const url of repos) {
-    //     const [user, id] = url.split("/");
-    //     const repo = (await gh.rest.repos.get({ owner: user, repo: id })).data;
+    const tasks = [];
+    let i = 0;
 
-    //     vfs.mkdirs(`/home/web-user/projects/${repo.name}`);
+    for (const url of repos) {
+        i++;
 
-    //     vfs.write(
-    //         `/home/web-user/projects/${repo.name}/description`,
-    //         enc.encode(repo.description ?? "No description"),
-    //     );
+        tasks.push((async () => {
+            const idx = i;
+            const [user, id] = url.split("/");
 
-    //     vfs.write(
-    //         `/home/web-user/projects/${repo.name}/url`,
-    //         enc.encode(repo.html_url),
-    //     );
-    // }
+            const repo = (await gh.rest.repos.get({ owner: user, repo: id }))
+                .data;
+
+            vfs.mkdirs(`/home/web-user/projects/${repo.name}`);
+
+            vfs.write(
+                `/home/web-user/projects/${repo.name}/description`,
+                enc.encode(repo.description ?? "No description")
+            );
+
+            vfs.write(
+                `/home/web-user/projects/${repo.name}/url`,
+                enc.encode(repo.html_url)
+            );
+
+            logInitPre(`Task ${idx} completed!`);
+        })());
+    }
+
+    logInitPre(`Running ${tasks.length} tasks asynchronously...`);
+
+    await Promise.all(tasks);
 
     logInit("Successfully fetched repository information!");
 

@@ -26,6 +26,7 @@ export const defaultEnv = Object.freeze({
     SHELL: "/bin/rsh",
     TERM: "xterm-256color",
     COLORTERM: "truecolor",
+    LOG_LEVEL: "info",
 });
 
 export class EnvMap extends Map<string, string> {
@@ -56,9 +57,9 @@ export class EnvMap extends Map<string, string> {
                 return get(cwd);
             case "USER":
             case "LOGNAME":
-                return userMap[get(uid)];
+                return userMap.get(get(uid))!;
             case "GROUP":
-                return groupMap[get(gid)];
+                return groupMap.get(get(gid))!;
             case "HOME":
                 return "/home/" + this.get("USER");
             default:
@@ -67,9 +68,7 @@ export class EnvMap extends Map<string, string> {
     }
 }
 
-export const env = writable<Map<string, string>>(
-    new EnvMap(Object.entries(defaultEnv))
-);
+export const env = new EnvMap(Object.entries(defaultEnv));
 
 export const getMachineInfo = () =>
     MACHINE_INFO.replace("%host%", get(hostname)).replace(
@@ -80,19 +79,19 @@ export const getMachineInfo = () =>
         }).format(Date.now())
     );
 
-export const userMap: Record<number, string> = Object.fromEntries([
+export const userMap: Map<number, string> = new Map([
     [ROOT_UID, ROOT_NAME],
     [USER_UID, USER_NAME],
 ]);
 
-export const groupMap: Record<number, string> = Object.fromEntries([
+export const groupMap: Map<number, string> = new Map([
     [ROOT_GID, ROOT_NAME],
     [USER_GID, USER_NAME],
 ]);
 
 export const setDefaultEnv = () => {
-    get(env).clear();
-    Object.entries(defaultEnv).forEach(([k, v]) => get(env).set(k, v));
+    env.clear();
+    Object.entries(defaultEnv).forEach(([k, v]) => env.set(k, v));
 };
 
 export const fillEnv = (input: string) =>
@@ -101,9 +100,9 @@ export const fillEnv = (input: string) =>
             /([^\\]?)\$([A-Za-z0-9_]+)/gm,
             (_str, pre, g1) =>
                 pre +
-                (get(env).has(g1)
-                    ? get(env).get(g1)!.replaceAll("\x1b", "\\x1b")
+                (env.has(g1)
+                    ? env.get(g1)!.replaceAll("\x1b", "\\x1b")
                     : "$" + g1)
         )
-        .replaceAll("$?", get(env).get("?") ?? "$?")
+        .replaceAll("$?", env.get("?") ?? "$?")
         .replaceAll("\\$", "$");

@@ -23,6 +23,7 @@ const {
     unset,
     which,
     mkdir,
+    projects,
 } = modules;
 
 export type DefaultFiles<K, V> = readonly [...[K, V][]];
@@ -44,6 +45,8 @@ export const defaultDirs: [string, number][] = [
 ];
 
 export const defaultFiles: DefaultFiles<string, string> = [
+    // Unix-like commands
+
     ["/usr/bin/echo", echo],
     ["/usr/bin/ls", ls],
     ["/usr/bin/cat", cat],
@@ -74,6 +77,12 @@ export const defaultFiles: DefaultFiles<string, string> = [
     ["/usr/bin/unset", unset],
     ["/usr/bin/which", which],
 
+    // Custom commands
+
+    ["/usr/bin/projects", projects],
+
+    // Files
+    
     ["/etc/sudoers", "web-user\nroot"],
 ];
 

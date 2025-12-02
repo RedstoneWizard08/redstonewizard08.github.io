@@ -19,7 +19,7 @@ export const initTerminal = async () => {
     logInitPre("Booting WebOS...");
     logInit("Bootstrapped virtual filesystem.");
     logInitPre("Starting Speedy Web Compiler service...");
-    
+
     await initSwc();
 
     logInit("Started Speedy Web Compiler service.");
@@ -33,18 +33,21 @@ export const initTerminal = async () => {
     setDefaultEnv();
 
     logInit("Environment set.");
+    logInitPre("Loading persistent data...");
+
+    logInit("Loaded persistent data.");
     logInitPre("Spawning process /usr/bin/help...");
-    
+
     println();
-    
+
     await runCommand("help");
-    
+
     println();
 
     logInit("Spawned process /usr/bin/help.");
     logInit("Running final system processes...");
     logInit("Booted WebOS.");
-    
+
     println();
 
     get(terminal).write(termPrompt());

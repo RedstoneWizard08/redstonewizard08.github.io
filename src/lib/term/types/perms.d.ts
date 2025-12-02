@@ -1,6 +1,6 @@
-import type { VFSEntry } from "$$/system/vfs";
-
 declare module "$$/system/permissions" {
+    import type { VFSEntry } from "$$/system/vfs";
+    
     export interface TargetPermissions {
         read: boolean;
         write: boolean;

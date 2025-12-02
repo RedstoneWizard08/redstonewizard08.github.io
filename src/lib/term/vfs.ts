@@ -32,11 +32,13 @@ declare global {
 
 // TODO: Relative symlinks
 export class VirtualFS implements IVirtFS {
-    public readonly tree: FileTree = new Map();
+    public readonly tree: FileTree;
 
     public constructor() {
+        this.tree = new Map();
         this.bootstrap();
-        window._vfs = this;
+
+        if (globalThis.window) window._vfs = this;
     }
 
     private resolvePath(input: string) {
@@ -463,7 +465,30 @@ export class VirtualFS implements IVirtFS {
             number,
             string,
         ][]) {
-            this.mkdirs(`/home/${name}`, 0o700, id, id);
+            this.mkdirs(
+                `${id == ROOT_UID ? "" : "/home"}/${name}`,
+                0o700,
+                id,
+                id
+            );
+            this.mkdirs(
+                `${id == ROOT_UID ? "" : "/home"}/${name}/.cache`,
+                0o700,
+                id,
+                id
+            );
+            this.mkdirs(
+                `${id == ROOT_UID ? "" : "/home"}/${name}/.config`,
+                0o700,
+                id,
+                id
+            );
+            this.mkdirs(
+                `${id == ROOT_UID ? "" : "/home"}/${name}/.local`,
+                0o700,
+                id,
+                id
+            );
         }
 
         uid.set(USER_UID);

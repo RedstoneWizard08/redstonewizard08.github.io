@@ -113,7 +113,7 @@ export const runCommand = async (text: string) => {
     }
 
     const cmd = args.shift()!;
-    const envPath = get(env).get("PATH");
+    const envPath = env.get("PATH");
     let found = false;
 
     if (!envPath) {

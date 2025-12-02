@@ -4,4 +4,5 @@ declare module "$$/system/fmt" {
     function logInfo(text?: string): void;
     function logWarn(text?: string): void;
     function logError(text?: string): void;
+    function logDebug(text?: string): void;
 }

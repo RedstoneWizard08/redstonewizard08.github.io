@@ -40,3 +40,9 @@ export const styled = (classes: ClassValue, text: string) =>
 
 export const delay = (time: number) =>
     new Promise((res, _rej) => setTimeout(res, time));
+
+export const inOrElse = <O, T extends O>(
+    value: O | undefined | null,
+    allowed: T[] | readonly T[],
+    fallback: T
+): T => ((value && (allowed as O[]).includes(value)) ? (value as T) : fallback);

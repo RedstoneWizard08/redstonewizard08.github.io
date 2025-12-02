@@ -29,7 +29,7 @@ export default defineConfig({
     vite: {
         plugins: [wasm()],
 
-        server: {
+        server: Object.keys(process.env).includes("REDSTONE_IS_DUMB") ? {
             headers: {
                 "Cross-Origin-Opener-Policy": "same-origin",
                 "Cross-Origin-Embedder-Policy": "require-corp",
@@ -43,7 +43,7 @@ export default defineConfig({
 
             port: 4000,
             strictPort: true,
-        },
+        } : {},
 
         css: {
             preprocessorOptions: {

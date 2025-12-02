@@ -1,7 +1,7 @@
 import initSwc, { transform } from "@swc/wasm-web";
-import ScopedEval from "./eval";
-import { vfs } from "./vfs";
-import * as fmtIn from "./log";
+import ScopedEval from "../eval";
+import { vfs } from "../vfs";
+import * as fmtIn from "../log";
 import {
     cwd,
     defaultEnv,
@@ -13,15 +13,15 @@ import {
     inApp,
     uid,
     userMap,
-} from "./env";
+} from "../env";
 import { get } from "svelte/store";
-import * as permsIn from "./perms";
+import * as permsIn from "../perms";
 import * as path from "@std/path";
 import * as dateFns from "date-fns";
-import { ExitError } from "./err";
-import * as cliHighlight from "../cli-highlight";
+import { ExitError } from "../err";
+import * as cliHighlight from "../../cli-highlight";
 
-// Checks to entire type-safety
+// Checks to ensure type-safety
 const fmt = fmtIn satisfies typeof import("$$/system/fmt");
 const perms = permsIn satisfies typeof import("$$/system/permissions");
 
@@ -31,18 +31,18 @@ export const isScriptCommand = (file: Uint8Array) =>
     new TextDecoder().decode(file).startsWith("#!/proc/builtin swc");
 
 export const getSystemCore = (
-    argv: string[],
+    argv: string[]
 ): typeof import("$$/system/core") => ({
     vfs,
     process: { argv },
     cwd: get(cwd),
     uid: get(uid),
     gid: get(gid),
-    user: userMap[get(uid)],
-    group: groupMap[get(gid)],
+    user: userMap.get(get(uid))!,
+    group: groupMap.get(get(gid))!,
     machineInfo: getMachineInfo(),
     hostname: get(hostname),
-    env: get(env),
+    env: env,
     defaultEnv,
     chdir: cwd.set,
     exit,
@@ -59,7 +59,7 @@ export const constModule = <T extends object>(name: string, module: T) =>
         Object.keys(module).map((key) => [
             key,
             `__cmd_injected_${slugify(name)}_${key}`,
-        ]),
+        ])
     );
 
 export const constModuleData = <T extends object>(name: string, module: T) =>
@@ -83,6 +83,8 @@ export const evalScript = async (code: string, argv: string[]) => {
 
     const modules = getModules(argv);
 
+    fmtIn.logDebug("Compiling script...");
+
     const out = await transform(code, {
         sourceMaps: true,
         jsc: {
@@ -99,9 +101,10 @@ export const evalScript = async (code: string, argv: string[]) => {
             transform: {
                 constModules: {
                     globals: Object.fromEntries(
-                        Object.entries(modules).map((
-                            [k, v],
-                        ) => [k, constModule(k, v)]),
+                        Object.entries(modules).map(([k, v]) => [
+                            k,
+                            constModule(k, v),
+                        ])
                     ),
                 },
             },
@@ -114,11 +117,15 @@ export const evalScript = async (code: string, argv: string[]) => {
         sourceFileName: "script.ts",
     });
 
+    fmtIn.logDebug("Script compiled successfully!");
+
     // console.log("Eval:", out.code);
 
     const scope = new ScopedEval();
 
     inApp.set(true);
+
+    fmtIn.logDebug("Evaluating script...");
 
     try {
         await scope.eval(
@@ -129,30 +136,35 @@ export const evalScript = async (code: string, argv: string[]) => {
                     location,
                     URL,
                     globalThis,
+                    fetch,
                     TextDecoder,
                     TextEncoder,
                 },
                 Object.fromEntries(
                     Object.entries(modules).flatMap(([k, v]) =>
                         constModuleData(k, v)
-                    ),
-                ),
-            ),
+                    )
+                )
+            )
         );
 
-        get(env).set("?", "0");
+        env.set("?", "0");
     } catch (err: unknown) {
         if (err instanceof ExitError) {
-            get(env).set("?", err.code.toString());
+            env.set("?", err.code.toString());
         } else {
+            fmtIn.logDebug("Script evaluation failed!");
+
             inApp.set(false);
             throw err;
         }
     }
 
-    const exitCode = parseInt(get(env).get("?")!);
+    const exitCode = parseInt(env.get("?")!);
 
-    get(env).set("EXIT_COLOR", exitCode == 0 ? "\x1b[32m" : "\x1b[31m");
+    fmtIn.logDebug(`Script evaluation complete! Exit code: ${exitCode}`);
+
+    env.set("EXIT_COLOR", exitCode == 0 ? "\x1b[32m" : "\x1b[31m");
 
     inApp.set(false);
 };

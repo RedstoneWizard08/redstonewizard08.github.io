@@ -22,6 +22,7 @@ import exit from "./cmd/exit.ts?raw";
 import unset from "./cmd/unset.ts?raw";
 import which from "./cmd/which.ts?raw";
 import mkdir from "./cmd/mkdir.ts?raw";
+import projects from "./cmd/projects.ts?raw";
 
 const modules = {
     ls,
@@ -46,6 +47,7 @@ const modules = {
     unset,
     which,
     mkdir,
+    projects,
 };
 
 const modulesTyped = modules as Record<keyof typeof modules, string>;
