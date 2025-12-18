@@ -12,16 +12,17 @@ import projectsLoader from "./plugins/projects.ts";
 import { shikiTransformers } from "./src/lib/shiki-config.ts";
 import { remarkCallout } from "@r4ai/remark-callout";
 import rehypeExternalLinks from "rehype-external-links";
+import playformCompress from "@playform/compress";
 
 // @ts-expect-error - Just making TS shut up about the default export.
 wasm.default ??= wasm;
 
 export default defineConfig({
     prefetch: true,
+    compressHTML: true,
 
     integrations: [
         projectsLoader(),
-
         mdx(),
         sitemap(),
         icon(),
@@ -33,10 +34,16 @@ export default defineConfig({
         uno({
             injectReset: true,
         }),
+
+        playformCompress(),
     ],
 
     vite: {
         plugins: [wasm.default()],
+
+        build: {
+            minify: "terser",
+        },
 
         server: Object.keys(import.meta.env).includes("REDSTONE_IS_DUMB")
             ? {
@@ -78,6 +85,7 @@ export default defineConfig({
 
     markdown: {
         remarkPlugins: [remarkCallout],
+
         rehypePlugins: [[rehypeExternalLinks, {
             target: "_blank",
         }]],
