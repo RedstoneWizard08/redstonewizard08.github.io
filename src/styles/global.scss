@@ -1,0 +1,195 @@
+@use "@fontsource-variable/jetbrains-mono";
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+
+    color: #ffffff;
+
+    font-family: "JetBrains Mono Variable", monospace;
+    font-variant-ligatures: additional-ligatures common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+
+    --at-apply: bg-dark-900;
+}
+
+* {
+    text-rendering: optimizeLegibility;
+}
+
+.markdown-content {
+    .giscus {
+        margin-top: 1rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+        font-weight: bold;
+        margin-left: 0;
+        
+        --at-apply: text-red;
+
+        &:not(:last-child) {
+            margin-bottom: 2rem;
+        }
+
+        &:not(:first-child) {
+            margin-top: 2rem;
+        }
+    }
+
+    h1 {
+        font-size: 20pt;
+    }
+
+    h2 {
+        font-size: 18pt;
+    }
+
+    h3 {
+        font-size: 16pt;
+    }
+
+    h4 {
+        font-size: 14pt;
+    }
+
+    a {
+        --at-apply: text-blue transition-all hover: text-blue-300
+            hover: underline;
+    }
+
+    :not(b, h1, h2, h3, h4, h5) {
+        --at-apply: font-400;
+    }
+
+    p:not(:last-child) {
+        margin-bottom: 1rem;
+    }
+
+    p > code {
+        font-family: "JetBrains Mono Variable", monospace;
+        --at-apply: bg-slate-700 p-0.5 px-1;
+    }
+
+    pre {
+        overflow: scroll;
+        font-family: "JetBrains Mono Variable", monospace;
+        --at-apply: bg-dark-500 p-4;
+
+        &:not(:first-child) {
+            margin-top: 1rem;
+        }
+
+        &:not(:last-child) {
+            margin-bottom: 1rem;
+        }
+
+        code {
+            font-family: "JetBrains Mono Variable", monospace;
+            counter-reset: step;
+            counter-increment: step calc(var(--start, 1) - 1);
+
+            .line {
+                &::before {
+                    content: counter(step);
+                    counter-increment: step;
+                    width: 1rem;
+                    margin-right: 1.5rem;
+                    display: inline-block;
+                    text-align: right;
+                    color: rgba(115, 138, 148, 0.4);
+                }
+
+                &.diff {
+                    &.add {
+                        --at-apply: bg-green bg-op-20;
+                    }
+
+                    &.remove {
+                        --at-apply: bg-red bg-op-20;
+                    }
+                }
+
+                &.highlighted {
+                    --at-apply: bg-blue bg-op-20 px-2;
+                }
+
+                span {
+                    &.highlighted-word {
+                        --at-apply: bg-blue bg-op-40 px-2;
+                    }
+                }
+            }
+        }
+    }
+
+    details {
+        &:not(:last-child) {
+            --at-apply: mb-4;
+        }
+        
+        summary {
+            --at-apply: bg-slate-700 hover:bg-slate-800 p-2 px-4 cursor-pointer
+                w-fit transition-all;
+        }
+
+        &::details-content {
+            transition: transform 0.25s linear forwards;
+            transform: scaleY(0);
+            transform-origin: top;
+        }
+
+        &:open {
+            summary {
+                --at-apply: mb-2;
+            }
+
+            &::details-content {
+                transform: scaleY(100%);
+            }
+        }
+    }
+
+    .footnotes {
+        --at-apply: text-op-80 text-white;
+    }
+
+    ol {
+        list-style-type: decimal;
+
+        li {
+            --at-apply: ml-12;
+
+            &:not(:last-child) {
+                --at-apply: mb-4;
+            }
+        }
+    }
+
+    [data-callout] {
+        &[data-callout-type=note] {
+            --at-apply: bg-blue bg-op-20 p-4 my-4;
+
+            [data-callout-title]::before {
+                content: "[!] "
+            }
+        }
+
+        [data-callout-title] {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        [data-callout-body] {
+            --at-apply: mt-3 ml-10;
+        }
+    }
+}

@@ -1,0 +1,62 @@
+---
+import Layout from "@/components/Layout.astro";
+import { getCollection, render } from "astro:content";
+
+export const getStaticPaths = async () =>
+    (await getCollection("blog")).map((it) => ({
+        params: { id: it.id },
+        props: { post: { ...it, id: undefined as unknown as string } },
+    }));
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const fmt = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+});
+
+const date = fmt.format(post.data.date);
+---
+
+<Layout title={post.data.title}>
+    <div
+        class="m-8 mb-4 w-[calc(100%_-_4rem)] space-y-4 bg-slate-800 p-4 lg:mr-4 lg:mb-8 lg:w-110"
+    >
+        <p class="text-emerald my-0 mb-4 py-0 text-lg font-bold">{post.data.title}</p>
+
+        <p class="text-op-60 text-white">{date}</p>
+
+        <p class="text-op-50 text-white">
+            Written by
+            <span class="text-yellow">{post.data.author}</span>
+        </p>
+    </div>
+
+    <div
+        class="markdown-content m-8 mt-4 w-full max-w-full bg-slate-900 p-6 break-words lg:mt-8 lg:ml-4 lg:w-[calc(100%_-_28rem)]"
+    >
+        <Content />
+
+        <div class="giscus">
+            <script
+                is:inline
+                src="https://giscus.app/client.js"
+                data-repo="RedstoneWizard08/redstonewizard08.github.io"
+                data-repo-id="R_kgDOIu3ddQ"
+                data-category="Comments"
+                data-category-id="DIC_kwDOIu3ddc4Cz-lQ"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="0"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="dark"
+                data-lang="en"
+                data-loading="lazy"
+                crossorigin="anonymous"
+                async></script>
+        </div>
+    </div>
+</Layout>

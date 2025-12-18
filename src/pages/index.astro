@@ -1,28 +1,57 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import Terminal from "../components/Terminal.astro";
+import Layout from "@/components/Layout.astro";
+import { renderer } from "@/lib/markdown";
+
+const text = `
+# Hi! I'm Redstone.
+
+I'm a programmer, musician, Minecraft modder, gamer, and person.
+I'm currently 17 years old and in 11th grade.
+
+### About Me
+
+I've been coding in some capacity since I was 6 years old when I
+learned Scratch. When I was 7, I started learning JavaScript, and I've
+been obsessed with programming since. It's one of my biggest passions
+and I really enjoy doing it.
+
+I am currently the lead developer of [The Broken Script](/projects/the-broken-script), a Minecraft horror mod with over 2 million downloads.
+It's a big passion project and leans into several passions of mine, especially the love for a good internet mystery (ARG). I code, generate
+ideas, manage the team, and write lore for it.
+
+You can find my stuff here, on my [GitHub](https://github.com/RedstoneWizard08), on my [YouTube Channel](https://youtube.com/@RedstoneWizard08),
+or [on this site](/projects).
+
+If you want to support us developing The Broken Script, you can donate to our [Ko-Fi](https://ko-fi.com/thebrokenscript)!
+
+### About this Site
+
+This site was created as a way for me to show off the cool stuff I'm
+working on, hopefully inspire others with [blogs](/blog), and have a portfolio.
+
+The site is written with [Astro](https://astro.build), and uses Markdown and Astro's JSX for its content.
+
+---
+<br />
+
+Feel free to look around! Check out my [skills](/skills), [projects](/projects), and [blogs](/blog).
+`;
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-        <!-- {
-            import.meta.env.DEV && (
-                <>
-                    <script
-                        is:inline
-                        src="https://cdn.jsdelivr.net/npm/eruda"
-                    />
-                    <script is:inline>eruda.init();</script>
-                </>
-            )
-        } -->
-    </head>
-    <body class="dark">
-        <main class="flex h-full w-full flex-col items-center justify-start">
-            <Terminal />
-        </main>
-    </body>
-</html>
+<Layout title="About Me">
+    <div
+        class="mt-8 flex w-full flex-col items-start justify-center px-8 md:flex-row"
+    >
+        <div class="flex flex-col items-center justify-center">
+            <img
+                src="https://avatars.githubusercontent.com/u/94275204"
+                class="h-60"
+            />
+        </div>
+
+        <div
+            class="markdown-content font-500 mt-8 mb-10 w-full bg-slate-900 p-6 md:mt-0 md:ml-8 md:w-160"
+            set:html={await renderer.process(text)}
+        />
+    </div>
+</Layout>

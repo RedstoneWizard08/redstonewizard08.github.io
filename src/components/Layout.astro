@@ -1,0 +1,33 @@
+---
+import BaseHead from "./BaseHead.astro";
+import Header from "./Header.astro";
+
+interface Props {
+    title?: string;
+    description?: string;
+}
+
+const {
+    title = "Redstone's Website",
+    description = "My personal website, blog, and portfolio!",
+} = Astro.props;
+---
+
+<!doctype html>
+<html>
+    <head>
+        <BaseHead {title} {description} />
+
+        <slot name="head" />
+    </head>
+
+    <body class="dark">
+        <main class="flex h-full w-full flex-col items-start justify-start">
+            <Header />
+
+            <div class="flex w-full flex-col lg:flex-row items-start justify-start">
+                <slot />
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,39 @@
+---
+import Layout from "@/components/Layout.astro";
+import { getCollection } from "astro:content";
+
+const coll = await getCollection("blog");
+
+const fmt = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+});
+---
+
+<Layout title="Blog">
+    <div class="m-8 flex w-full flex-col items-start justify-start space-y-4">
+        <p class="text-purple text-2xl">My Blog</p>
+        <p class="font-300 text-op-70 mb-8 text-white">
+            Occasional write-ups, complaining sessions, and a general personal
+            yapfest. Read if you want!
+        </p>
+
+        {
+            coll.map((post) => (
+                <a
+                    class="flex w-full flex-col items-start justify-center bg-slate-800 p-4 transition-all hover:bg-slate-700"
+                    href={`/blog/${post.id}`}
+                >
+                    <p class="text-emerald mb-2 text-lg font-bold">
+                        {post.data.title}
+                    </p>
+                    <p class="text-op-60 font-300 text-white">
+                        {fmt.format(post.data.date)} &bull; Written by{" "}
+                        {post.data.author}
+                    </p>
+                </a>
+            ))
+        }
+    </div>
+</Layout>

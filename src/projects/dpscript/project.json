@@ -1,0 +1,16 @@
+{
+    "id": "dpscript",
+    "alias": ["dps", "dsc"],
+    "name": "DPScript",
+    "authors": ["RedstoneWizard08", "KodeurKubik"],
+    "state": "active",
+    "skills": [
+        "rust",
+        "lang-dev",
+        "minecraft",
+        "planning",
+        "design",
+        "team",
+        "documentation"
+    ]
+}

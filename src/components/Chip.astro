@@ -1,0 +1,21 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+    icon: string;
+    label: string;
+    color: string;
+    hoverColor: string;
+    href?: string;
+}
+
+const { icon, label, color, hoverColor, href } = Astro.props;
+const Element = href ? "a" : "div";
+const clazz = `text-op-80 bg-op-20 rounded-4xl hover:bg-op-40 hover:text-op-100 inline-flex cursor-pointer flex-row items-center justify-center ${color} px-4 py-1 text-sm text-white transition-all hover:${hoverColor}`;
+const props = href ? { href, class: clazz } : { class: clazz };
+---
+
+<Element {...props}>
+    <Icon size="18px" class="mr-2" name={icon.replace(/^iconify:/gm, "")} />
+    {label}
+</Element>

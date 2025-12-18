@@ -1,0 +1,56 @@
+---
+import Chip from "@/components/Chip.astro";
+import Layout from "@/components/Layout.astro";
+import { states } from "@/projects";
+import { projects } from "virtual:projects";
+
+const stateColors = {
+    green: ["bg-green-600", "bg-green-400"],
+    orange: ["bg-orange-600", "bg-orange-400"],
+};
+---
+
+<Layout title="Projects">
+    <div class="m-8 flex w-full flex-col items-start justify-start space-y-4">
+        <p class="text-2xl text-purple">My Projects</p>
+        <p class="font-300 text-op-70 mb-8 text-white">
+            These are projects I've created or worked on that I wanted to
+            showcase here.
+        </p>
+
+        {
+            Object.values(projects)
+                .toSorted((a, b) => b.skills.length - a.skills.length)
+                .map((proj) => (
+                    <a
+                        class="flex w-full flex-col items-start justify-center bg-slate-800 p-4 transition-all hover:bg-slate-700"
+                        href={`/projects/${proj.id}`}
+                    >
+                        <p class="text-emerald mb-2 text-lg font-bold">
+                            {proj.name}
+                        </p>
+
+                        <div class="text-op-60 font-300 flex w-full flex-row items-center justify-start text-white">
+                            <p class="mr-2">{proj.skills.length} skills |</p>
+                            <Chip
+                                icon={states[proj.state].icon}
+                                label={`State: ${states[proj.state].name}`}
+                                color={
+                                    stateColors[
+                                        states[proj.state]
+                                            .color as keyof typeof stateColors
+                                    ][0]
+                                }
+                                hoverColor={
+                                    stateColors[
+                                        states[proj.state]
+                                            .color as keyof typeof stateColors
+                                    ][1]
+                                }
+                            />
+                        </div>
+                    </a>
+                ))
+        }
+    </div>
+</Layout>

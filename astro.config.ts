@@ -8,11 +8,20 @@ import compress from "astro-compress";
 import uno from "unocss/astro";
 import svelte from "@astrojs/svelte";
 import wasm from "vite-plugin-wasm";
+import projectsLoader from "./plugins/projects.ts";
+import { shikiTransformers } from "./src/lib/shiki-config.ts";
+import { remarkCallout } from "@r4ai/remark-callout";
+import rehypeExternalLinks from "rehype-external-links";
+
+// @ts-expect-error - Just making TS shut up about the default export.
+wasm.default ??= wasm;
 
 export default defineConfig({
     prefetch: true,
 
     integrations: [
+        projectsLoader(),
+
         mdx(),
         sitemap(),
         icon(),
@@ -27,23 +36,25 @@ export default defineConfig({
     ],
 
     vite: {
-        plugins: [wasm()],
+        plugins: [wasm.default()],
 
-        server: Object.keys(process.env).includes("REDSTONE_IS_DUMB") ? {
-            headers: {
-                "Cross-Origin-Opener-Policy": "same-origin",
-                "Cross-Origin-Embedder-Policy": "require-corp",
-            },
+        server: Object.keys(import.meta.env).includes("REDSTONE_IS_DUMB")
+            ? {
+                headers: {
+                    "Cross-Origin-Opener-Policy": "same-origin",
+                    "Cross-Origin-Embedder-Policy": "require-corp",
+                },
 
-            hmr: {
+                hmr: {
+                    port: 4000,
+                    clientPort: 443,
+                    protocol: "wss",
+                },
+
                 port: 4000,
-                clientPort: 443,
-                protocol: "wss",
-            },
-
-            port: 4000,
-            strictPort: true,
-        } : {},
+                strictPort: true,
+            }
+            : {},
 
         css: {
             preprocessorOptions: {
@@ -63,10 +74,16 @@ export default defineConfig({
 
     server: {
         port: 4000,
+    },
 
-        headers: {
-            "Cross-Origin-Opener-Policy": "same-origin",
-            "Cross-Origin-Embedder-Policy": "require-corp",
+    markdown: {
+        remarkPlugins: [remarkCallout],
+        rehypePlugins: [[rehypeExternalLinks, {
+            target: "_blank",
+        }]],
+
+        shikiConfig: {
+            transformers: shikiTransformers(),
         },
     },
 

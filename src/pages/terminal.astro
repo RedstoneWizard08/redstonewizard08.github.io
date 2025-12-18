@@ -1,0 +1,17 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import TerminalComp from "../components/Terminal.astro";
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    </head>
+    <body class="dark">
+        <main class="flex h-full w-full flex-col items-center justify-start">
+            <TerminalComp />
+        </main>
+    </body>
+</html>

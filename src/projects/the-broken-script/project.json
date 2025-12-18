@@ -1,0 +1,42 @@
+{
+    "id": "the-broken-script",
+    "alias": ["tbs", "thebrokenscript"],
+    "name": "The Broken Script",
+    "authors": [
+        "wendigodrip",
+        "RedstoneWizard08",
+        {
+            "name": "The Broken Script Team",
+            "members": [
+                "DominikLOL",
+                "rdh",
+                "faechka",
+                "Fridelit",
+                "gary_go_brr",
+                "bennie",
+                "JDG",
+                "shadowmaster435",
+                "Went_Nuts",
+                "L0V3M1ST",
+                "Stevelocks",
+                "Kaomoji5314",
+                "ChoosingBerry",
+                "KarisaTFN",
+                "tekkitdooood"
+            ]
+        }
+    ],
+    "state": "active",
+    "skills": [
+        "kotlin",
+        "java",
+        "minecraft",
+        "planning",
+        "design",
+        "writing",
+        "team",
+        "management",
+        "coordination",
+        "documentation"
+    ]
+}

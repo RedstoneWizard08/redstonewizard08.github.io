@@ -1,0 +1,112 @@
+---
+import { skills, states } from "@/projects";
+import { createDesc } from "@/projects/util";
+import type { GetStaticPaths } from "astro";
+import { projects } from "virtual:projects";
+import Chip from "@/components/Chip.astro";
+import Layout from "@/components/Layout.astro";
+import type { Author } from "@/projects/types";
+import { renderer } from "@/lib/markdown";
+
+export const getStaticPaths: GetStaticPaths = () => [
+    ...Object.keys(projects).map((it) => ({ params: { id: it } })),
+    ...Object.values(projects).flatMap((it) =>
+        it.alias.map((it) => ({ params: { id: it } }))
+    ),
+];
+
+const { id } = Astro.params;
+
+const project =
+    projects[id as keyof typeof projects] ??
+    Object.values(projects).find((it) => it.alias.includes(id as string));
+
+const state = states[project.state];
+
+const stateColors = {
+    green: ["bg-green-600", "bg-green-400"],
+    orange: ["bg-orange-600", "bg-orange-400"],
+};
+
+const readme = await renderer.process(project.readme);
+
+type AuthorMeta =
+    | { type: "single"; value: string }
+    | { type: "label"; value: string };
+
+const mapAuthors = (authors: Author[]) => {
+    const els: AuthorMeta[] = [];
+
+    for (const info of authors) {
+        if (typeof info == "string") {
+            els.push({ type: "single", value: info });
+        } else {
+            els.push({ type: "label", value: info.name });
+
+            for (const member of info.members) {
+                els.push({ type: "single", value: member });
+            }
+        }
+    }
+
+    return els;
+};
+---
+
+<Layout title={project.name} description={createDesc(project)}>
+    <div
+        class="m-8 mb-4 w-[calc(100%_-_4rem)] space-y-4 bg-slate-800 p-4 lg:mr-4 lg:mb-8 lg:w-110"
+    >
+        <p class="text-orange my-0 py-0 text-xl">{project.name}</p>
+
+        <hr class="b-white b-op-15 my-4 w-full" />
+        <p class="text-op-50 mb-2 text-lg text-white">Authors</p>
+
+        {
+            mapAuthors(project.authors).map((it) =>
+                it.type == "label" ? (
+                    <>
+                        <hr class="b-white b-op-15 my-4 w-full" />
+                        <p class="text-op-50 mb-2 text-white">{it.value}</p>
+                    </>
+                ) : (
+                    <>
+                        <p
+                            class={`ml-8 ${it.value == "RedstoneWizard08" ? "text-yellow" : ""}`}
+                        >
+                            {it.value}
+                        </p>
+                    </>
+                )
+            )
+        }
+
+        <hr class="b-white b-op-15 my-4 w-full" />
+
+        <Chip
+            icon={state.icon}
+            label=`State: ${state.name}`
+            color={stateColors[state.color as keyof typeof stateColors][0]}
+            hoverColor={stateColors[state.color as keyof typeof stateColors][1]}
+        />
+
+        <div class="space-y-2 space-x-2">
+            {
+                project.skills.map((id) => (
+                    <Chip
+                        href="/skills"
+                        icon={skills[id].icon}
+                        label={skills[id].name}
+                        color="bg-cyan-600"
+                        hoverColor="bg-cyan-400"
+                    />
+                ))
+            }
+        </div>
+    </div>
+
+    <div
+        class="markdown-content m-8 mt-4 w-full max-w-full bg-slate-900 p-6 lg:mt-8 lg:ml-4 lg:w-[calc(100%_-_28rem)]"
+        set:html={readme}
+    />
+</Layout>

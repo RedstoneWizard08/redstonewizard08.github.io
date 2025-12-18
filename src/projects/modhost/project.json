@@ -1,0 +1,17 @@
+{
+    "id": "modhost",
+    "alias": ["mh", "mhost"],
+    "name": "ModHost",
+    "authors": ["RedstoneWizard08"],
+    "state": "paused",
+    "skills": [
+        "rust",
+        "svelte",
+        "web",
+        "planning",
+        "design",
+        "integration",
+        "security",
+        "documentation"
+    ]
+}

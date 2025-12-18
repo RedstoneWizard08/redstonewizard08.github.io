@@ -12,6 +12,9 @@
             "Decorators",
             "ESNext",
             "ESNext.Array"
-        ]
+        ],
+        "paths": {
+            "@/*": ["./src/*"]
+        }
     }
 }

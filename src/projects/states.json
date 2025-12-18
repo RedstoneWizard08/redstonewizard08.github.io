@@ -1,0 +1,12 @@
+{
+    "paused": {
+        "name": "Paused",
+        "icon": "iconify:mdi:pause",
+        "color": "orange"
+    },
+    "active": {
+        "name": "Active Development",
+        "icon": "iconify:mdi:play",
+        "color": "green"
+    }
+}

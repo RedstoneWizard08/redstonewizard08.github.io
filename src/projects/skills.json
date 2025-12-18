@@ -1,0 +1,66 @@
+{
+    "rust": {
+        "name": "Rust",
+        "icon": "iconify:vscode-icons:file-type-rust"
+    },
+    "lang-dev": {
+        "name": "Language Development",
+        "icon": "iconify:mdi:language"
+    },
+    "minecraft": {
+        "name": "Minecraft",
+        "icon": "iconify:material-icon-theme:minecraft"
+    },
+    "planning": {
+        "name": "Planning",
+        "icon": "iconify:icon-park-outline:plan"
+    },
+    "design": {
+        "name": "Design",
+        "icon": "iconify:mdi:design"
+    },
+    "team": {
+        "name": "Team",
+        "icon": "iconify:ant-design:team-outlined"
+    },
+    "documentation": {
+        "name": "Documentation",
+        "icon": "iconify:oui:documentation"
+    },
+    "kotlin": {
+        "name": "Kotlin",
+        "icon": "iconify:logos:kotlin-icon"
+    },
+    "java": {
+        "name": "Java",
+        "icon": "iconify:logos:java"
+    },
+    "writing": {
+        "name": "Writing",
+        "icon": "iconify:stash:pencil-writing-duotone"
+    },
+    "management": {
+        "name": "Management",
+        "icon": "iconify:stash:pencil-writing-duotone"
+    },
+    "coordination": {
+        "name": "Coordination",
+        "icon": "iconify:icon-park-outline:connection-point"
+    },
+    "svelte": {
+        "name": "Svelte",
+        "icon": "iconify:logos:svelte-icon"
+    },
+    "web": {
+        "name": "Web",
+        "icon": "iconify:mdi:web"
+    },
+    "security": {
+        "name": "Security",
+        "icon": "iconify:mdi:security-lock"
+    },
+    "integration": {
+        "name": "Integration",
+        "icon": "iconify:stash:integrations"
+    }
+}
