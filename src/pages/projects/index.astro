@@ -11,7 +11,7 @@ const stateColors = {
 ---
 
 <Layout title="Projects">
-    <div class="m-8 flex w-full flex-col items-start justify-start space-y-4">
+    <div class="m-8 flex w-full flex-col items-start justify-start">
         <p class="text-2xl text-purple">My Projects</p>
         <p class="font-300 text-op-70 mb-8 text-white">
             These are projects I've created or worked on that I wanted to
@@ -23,7 +23,7 @@ const stateColors = {
                 .toSorted((a, b) => b.skills.length - a.skills.length)
                 .map((proj) => (
                     <a
-                        class="flex w-full flex-col items-start justify-center bg-slate-800 p-4 transition-all hover:bg-slate-700"
+                        class="flex w-full flex-col items-start justify-center bg-slate-800 p-4 transition-all hover:bg-slate-700 space-below"
                         href={`/projects/${proj.id}`}
                     >
                         <p class="text-emerald mb-2 text-lg font-bold">

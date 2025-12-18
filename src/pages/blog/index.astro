@@ -12,7 +12,7 @@ const fmt = new Intl.DateTimeFormat("en-US", {
 ---
 
 <Layout title="Blog">
-    <div class="m-8 flex w-full flex-col items-start justify-start space-y-4">
+    <div class="m-8 flex w-full flex-col items-start justify-start">
         <p class="text-purple text-2xl">My Blog</p>
         <p class="font-300 text-op-70 mb-8 text-white">
             Occasional write-ups, complaining sessions, and a general personal
@@ -22,7 +22,7 @@ const fmt = new Intl.DateTimeFormat("en-US", {
         {
             coll.map((post) => (
                 <a
-                    class="flex w-full flex-col items-start justify-center bg-slate-800 p-4 transition-all hover:bg-slate-700"
+                    class="flex w-full flex-col items-start justify-center bg-slate-800 p-4 transition-all hover:bg-slate-700 space-below"
                     href={`/blog/${post.id}`}
                 >
                     <p class="text-emerald mb-2 text-lg font-bold">

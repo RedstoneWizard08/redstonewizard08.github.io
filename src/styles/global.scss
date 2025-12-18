@@ -21,6 +21,10 @@ body {
     text-rendering: optimizeLegibility;
 }
 
+.space-below:not(:last-child) {
+    --at-apply: mb-4;
+}
+
 .markdown-content {
     .giscus {
         margin-top: 1rem;
