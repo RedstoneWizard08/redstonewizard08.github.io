@@ -90,10 +90,11 @@ const mapAuthors = (authors: Author[]) => {
             hoverColor={stateColors[state.color as keyof typeof stateColors][1]}
         />
 
-        <div class="space-y-2 space-x-2">
+        <div>
             {
                 project.skills.map((id) => (
                     <Chip
+                        class="m-2"
                         href="/skills"
                         icon={skills[id].icon}
                         label={skills[id].name}
