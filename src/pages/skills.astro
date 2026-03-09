@@ -1,5 +1,4 @@
 ---
-import Chip from "@/components/Chip.astro";
 import Layout from "@/components/Layout.astro";
 import { skills } from "@/projects";
 import { Icon } from "astro-icon/components";
@@ -9,8 +8,8 @@ import { Icon } from "astro-icon/components";
     <div class="m-8 flex w-full flex-col items-start justify-start space-y-4">
         <p class="text-purple text-2xl">My Skills</p>
         <p class="font-300 text-op-70 mb-8 text-white">
-            These are technologies, frameworks, and systems I know how to use
-            and feel proficient with.
+            These are technologies, frameworks, systems, and skills I know how
+            to use and feel proficient with.
         </p>
 
         <div class="mt-8 block w-full text-center">
@@ -18,7 +17,7 @@ import { Icon } from "astro-icon/components";
                 Object.keys(skills)
                     .toSorted()
                     .map((id) => (
-                        <div class="inline-flex w-fit flex-row items-center justify-start bg-slate-800 p-4 transition-all hover:bg-slate-700 m-4">
+                        <div class="m-4 inline-flex w-fit flex-row items-center justify-start bg-slate-800 p-4 transition-all hover:bg-slate-700">
                             <Icon
                                 size="24px"
                                 class="mr-2"

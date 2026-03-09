@@ -1,6 +1,6 @@
 ---
 import Layout from "@/components/Layout.astro";
-import { renderer } from "@/lib/markdown";
+import { renderer, type Heading } from "@/lib/markdown";
 import { getCollection } from "astro:content";
 
 export const getStaticPaths = async () =>
@@ -11,6 +11,8 @@ export const getStaticPaths = async () =>
 
 const { post } = Astro.props;
 const content = await renderer.process(post.body);
+const head = content.data.headings as Heading[];
+const min = head.map((it) => it.depth).toSorted()[0];
 
 const fmt = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -23,7 +25,7 @@ const date = fmt.format(post.data.date);
 
 <Layout title={post.data.title}>
     <div
-        class="m-8 mb-4 w-[calc(100%_-_4rem)] space-y-4 bg-slate-800 p-4 lg:mr-4 lg:mb-8 lg:w-110"
+        class="m-8 mb-4 w-[calc(100%_-_4rem)] space-y-4 bg-slate-800 p-4 lg:mr-4 lg:mb-8 lg:w-110 sticky top-5"
     >
         <p class="text-emerald my-0 mb-4 py-0 text-lg font-bold">
             {post.data.title}
@@ -35,6 +37,36 @@ const date = fmt.format(post.data.date);
             Written by
             <span class="text-yellow">{post.data.author}</span>
         </p>
+
+        <hr class="b-white b-op-15 my-4 w-full" />
+
+        <div class="flex flex-col">
+            {
+                head.map((it) => {
+                    const depth = it.depth - min;
+                    const left = {
+                        0: "ml-0",
+                        1: "ml-4",
+                        2: "ml-8",
+                        3: "ml-12",
+                        4: "ml-16",
+                        5: "ml-20",
+                        6: "ml-24",
+                    }[depth];
+
+                    return (
+                        <>
+                            <a
+                                href={`#${it.link}`}
+                                class={`${left} text-op-50 cursor-pointer text-white hover:underline`}
+                            >
+                                {it.text}
+                            </a>
+                        </>
+                    );
+                })
+            }
+        </div>
     </div>
 
     <div

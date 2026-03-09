@@ -1,0 +1,13 @@
+{
+    "id": "brainfk",
+    "alias": ["bf", "brainfuck"],
+    "name": "BrainF**k Compiler",
+    "authors": [
+        "RedstoneWizard08"
+    ],
+    "state": "active",
+    "skills": [
+        "rust",
+        "lang-dev"
+    ]
+}

@@ -22,6 +22,8 @@ ideas, manage the team, and write lore for it.
 You can find my stuff here, on my [GitHub](https://github.com/RedstoneWizard08), on my [YouTube Channel](https://youtube.com/@RedstoneWizard08),
 or [on this site](/projects).
 
+You can also find some of my stuff on our self-hosted Forgejo, [here](https://git.thebrokenscript.net/RedstoneWizard08).
+
 If you want to support us developing The Broken Script, you can donate to our [Ko-Fi](https://ko-fi.com/thebrokenscript)!
 
 ### About this Site
@@ -31,7 +33,7 @@ working on, hopefully inspire others with [blogs](/blog), and have a portfolio.
 
 The site is written with [Astro](https://astro.build) and [uno](https://unocss.dev/), and uses Markdown and Astro's JSX for its content.
 
----
+\---
 <br />
 
 Feel free to look around! Check out my [skills](/skills), [projects](/projects), and [blogs](/blog).
@@ -42,7 +44,7 @@ Feel free to look around! Check out my [skills](/skills), [projects](/projects),
     <div
         class="mt-8 flex w-full flex-col items-start justify-center px-8 md:flex-row"
     >
-        <div class="flex flex-col items-center justify-center">
+        <div class="flex flex-col items-center justify-center p-4 bg-slate-700">
             <img
                 src="https://avatars.githubusercontent.com/u/94275204"
                 class="h-60"
@@ -50,7 +52,7 @@ Feel free to look around! Check out my [skills](/skills), [projects](/projects),
         </div>
 
         <div
-            class="markdown-content font-500 mt-8 mb-10 w-full bg-slate-900 p-6 md:mt-0 md:ml-8 md:w-160"
+            class="markdown-content font-500 mt-8 mb-10 w-full bg-slate-800 p-6 md:mt-0 md:ml-8 md:w-200"
             set:html={await renderer.process(text)}
         />
     </div>
