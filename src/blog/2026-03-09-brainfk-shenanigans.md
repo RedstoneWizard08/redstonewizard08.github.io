@@ -1,7 +1,7 @@
 ---
 title: BrainF**k Shenanigans
 author: RedstoneWizard08
-date: 2026-03-10 # This is actually the 9th, but zod is dumb
+date: 2026-03-09
 ---
 
 ## BrainF\*\*k Shenanigans
