@@ -3,6 +3,8 @@ import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
+import remarkCallout from "@r4ai/remark-callout";
+import remarkReadingTime from "remark-reading-time";
 import { unified } from "unified";
 import rehypeShikiFromHighlighter from "@shikijs/rehype/core";
 import gdd from "@shikijs/themes/github-dark-default";
@@ -53,8 +55,10 @@ export const getHeadings = () => {
 
 export const renderer = unified()
     .use(remarkParse)
+    .use(remarkCallout)
     .use(remarkGfm)
     .use(getHeadings)
+    .use(remarkReadingTime, { attribute: "readingTime" } as any)
     .use(remarkRehype, {
         allowDangerousHtml: true,
         passThrough: [],

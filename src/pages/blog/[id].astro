@@ -25,10 +25,14 @@ const date = fmt.format(post.data.date);
 
 <Layout title={post.data.title}>
     <div
-        class="m-8 mb-4 w-[calc(100%_-_4rem)] space-y-4 bg-slate-800 p-4 lg:mr-4 lg:mb-8 lg:w-110 sticky top-5"
+        class="sticky top-5 m-8 mb-4 w-[calc(100%_-_4rem)] space-y-4 bg-slate-800 p-4 lg:mr-4 lg:mb-8 lg:w-110"
     >
         <p class="text-emerald my-0 mb-4 py-0 text-lg font-bold">
             {post.data.title}
+        </p>
+
+        <p class="text-op-60 text-white">
+            {(content.data.readingTime as any).text}
         </p>
 
         <p class="text-op-60 text-white">{date}</p>

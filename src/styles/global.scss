@@ -184,7 +184,9 @@ body {
             --at-apply: bg-blue bg-op-20 p-4 my-4;
 
             [data-callout-title]::before {
-                content: "[!] "
+                content: "[!] ";
+                font-family: monospace;
+                --at-apply: text-green-300;
             }
         }
 
@@ -194,7 +196,7 @@ body {
         }
 
         [data-callout-body] {
-            --at-apply: mt-3 ml-10;
+            --at-apply: mt-3;
         }
     }
 }

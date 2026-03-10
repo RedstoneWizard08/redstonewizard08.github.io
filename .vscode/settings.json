@@ -7,9 +7,11 @@
         "*.mdx": "mdx",
         "*.css": "css",
         "*.pcss": "postcss",
-        "*.scss": "scss"
+        "*.scss": "scss",
+        "*.md": "markdown"
     },
     "deno.enable": true,
     "svelte.enable-ts-plugin": false,
-    "svelte.ask-to-enable-ts-plugin": false
+    "svelte.ask-to-enable-ts-plugin": false,
+    "markdownlint.severityForWarning": "Ignore"
 }

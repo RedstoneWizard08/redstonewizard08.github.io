@@ -1,7 +1,7 @@
 ---
 title: Writing a Kotlin-first Registry API for Minecraft
 author: RedstoneWizard08
-date: 2025-12-17
+date: 2025-12-18 # This is actually the 17th, but zod is dumb
 ---
 
 ## Writing a Kotlin-first Registry API for Minecraft
